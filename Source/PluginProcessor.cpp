@@ -166,7 +166,8 @@ bool HiLowCutPluginAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* HiLowCutPluginAudioProcessor::createEditor()
 {
-    return new HiLowCutPluginAudioProcessorEditor (*this);
+    //return new HiLowCutPluginAudioProcessorEditor(*this);
+    return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
@@ -183,25 +184,27 @@ void HiLowCutPluginAudioProcessor::setStateInformation (const void* data, int si
     // whose contents will have been created by the getStateInformation() call.
 }
 
+    // this function below sets up the paramter layout for all the paramters that will be available to be changed in the gui
+
 juce::AudioProcessorValueTreeState::ParameterLayout
-    createParameterLayout() {
+HiLowCutPluginAudioProcessor::createParameterLayout() {
 
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
     layout.add(std::make_unique<juce::AudioParameterFloat>("LowCut Freq",
-                                                           "LowCut Freq",
-                                                           juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f),
-                                                           20.f));
+        "LowCut Freq",
+        juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f),
+        20.f));
 
     layout.add(std::make_unique<juce::AudioParameterFloat>("HiCut Freq",
         "HiCut Freq",
         juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f),
         20000.f));
 
-    juce::StringArray stringArray; 
-    
+    juce::StringArray stringArray;
+
     for (int i = 0; i < 4; i++) {
-        juce::String str; 
+        juce::String str;
         str << (12 + i * 12);
         str << "db/Oct";
         stringArray.add(str);
@@ -210,7 +213,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout
     layout.add(std::make_unique<juce::AudioParameterChoice>("LowCut Slope", "LowCut Slope", stringArray, 0));
     layout.add(std::make_unique<juce::AudioParameterChoice>("HiCut Slope", "HiCut Slope", stringArray, 0));
 
-    return layout; 
+    return layout;
 }
 
 //==============================================================================
