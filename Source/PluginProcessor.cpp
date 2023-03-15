@@ -123,7 +123,7 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
     {
     case Slope_12: {
         *leftLowCut.get<0>().coefficients = *cutCoefficients[0];
-        leftLowCut.setBypassed<0>(false); //wow
+        leftLowCut.setBypassed<0>(false); //wow heyy
         break;
     }
     case Slope_24: {
