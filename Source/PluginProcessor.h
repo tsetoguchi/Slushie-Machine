@@ -10,6 +10,22 @@
 
 #include <JuceHeader.h>
 
+enum Slope {
+    Slope_12, 
+    Slope_24, 
+    Slope_36,
+    Slope_48
+};
+
+struct ChainSettings
+{
+    float lowCutFreq{ 0 }, highCutFreq{ 0 };
+
+    Slope lowCutSlope{ Slope::Slope_12 }, highCutSlope{ Slope::Slope_12 };
+};
+
+ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
+
 //========hello======================================================================
 /**
 */
@@ -70,6 +86,9 @@ private:
 
     MonoChain leftChain, rightChain;
 
+    enum chainPositions {
+        LowCut, HighCut
+    };
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HiLowCutPluginAudioProcessor)
