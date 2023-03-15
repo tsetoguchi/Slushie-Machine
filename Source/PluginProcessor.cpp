@@ -104,6 +104,7 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
     spec.numChannels = 1;
     spec.sampleRate = sampleRate; 
     
+    // here we pass in the spec to both left and right chains
     leftChain.prepare(spec);
     rightChain.prepare(spec);
 
