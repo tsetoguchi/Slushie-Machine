@@ -112,11 +112,11 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
     auto cutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.lowCutFreq, sampleRate, 2 * (chainSettings.lowCutSlope + 1));
 
     auto& leftLowCut = leftChain.get<chainPositions::LowCut>();
-    updateCutFilter(leftLowCut, cutCoefficients, chainSettings);
+    updateCutFilter(leftLowCut, cutCoefficients, chainSettings.lowCutSlope);
 
 
     auto& rightLowCut = rightChain.get<chainPositions::LowCut>();
-    updateCutFilter(rightLowCut, cutCoefficients, chainSettings);
+    updateCutFilter(rightLowCut, cutCoefficients, chainSettings.lowCutSlope);
 
     
 }
@@ -175,10 +175,10 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         2 * (chainSettings.lowCutSlope + 1));
 
     auto& leftLowCut = leftChain.get<chainPositions::LowCut>();
-    updateCutFilter(leftLowCut, cutCoefficients, chainSettings);
+    updateCutFilter(leftLowCut, cutCoefficients, chainSettings.lowCutSlope);
 
     auto& rightLowCut = rightChain.get<chainPositions::LowCut>();
-    updateCutFilter(rightLowCut, cutCoefficients, chainSettings);
+    updateCutFilter(rightLowCut, cutCoefficients, chainSettings.lowCutSlope);
 
    
 

@@ -93,7 +93,9 @@ private:
     using Coefficients = Filter::CoefficientsPtr;
     
     template<typename ChainType, typename CoefficientType>
-    void updateCutFilter(ChainType& leftLowCut, const CoefficientType& cutCoefficients, const ChainSettings& chainSettings) {
+    void updateCutFilter(ChainType& leftLowCut, const CoefficientType& cutCoefficients, 
+        //const ChainSettings& chainSettings
+        const Slope& lowCutSlope) {
 
      
 
@@ -102,7 +104,7 @@ private:
         leftLowCut.setBypassed<2>(true);
         leftLowCut.setBypassed<3>(true);
 
-        switch (chainSettings.lowCutSlope)
+        switch (lowCutSlope)
         {
         case Slope_12: {
             *leftLowCut.template get<0>().coefficients = *cutCoefficients[0];
