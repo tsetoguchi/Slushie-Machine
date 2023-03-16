@@ -272,6 +272,11 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
     return layout;
 }
 
+void HiLowCutPluginAudioProcessor::updateCoefficients(Coefficients& old, const Coefficients& replacements)
+{
+    *old = *replacements;
+}
+
 
 //==============================================================================
 // This creates new instances of the plugin..
