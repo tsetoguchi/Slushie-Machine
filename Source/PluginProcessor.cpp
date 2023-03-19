@@ -159,6 +159,7 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         buffer.clear (i, 0, buffer.getNumSamples());
 
     updateFilters();
+    ChainSettings settingsForGain = getChainSettings(apvts);
 
     juce::dsp::AudioBlock<float> block(buffer);
 
@@ -170,6 +171,8 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
 
     leftChain.process(leftContext);
     rightChain.process(rightContext);
+
+    buffer.applyGain(settingsForGain.gainSetting);
 
 
     
@@ -220,6 +223,8 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts) {
 
     settings.lowCutSlope = static_cast<Slope>(apvts.getRawParameterValue("LowCut Slope")->load());
     settings.highCutSlope = static_cast<Slope>(apvts.getRawParameterValue("HiCut Slope")->load());
+
+    settings.gainSetting = apvts.getRawParameterValue("Gain")->load(); 
    
 
     return settings; 
@@ -235,12 +240,12 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
 
     layout.add(std::make_unique<juce::AudioParameterFloat>("LowCut Freq",
         "LowCut Freq",
-        juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f),
+        juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 0.25f),
         20.f));
 
     layout.add(std::make_unique<juce::AudioParameterFloat>("HiCut Freq",
         "HiCut Freq",
-        juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f),
+        juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 0.25f),
         20000.f));
 
     juce::StringArray stringArray;
@@ -254,7 +259,10 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
 
     layout.add(std::make_unique<juce::AudioParameterChoice>("LowCut Slope", "LowCut Slope", stringArray, 0));
     layout.add(std::make_unique<juce::AudioParameterChoice>("HiCut Slope", "HiCut Slope", stringArray, 0));
-
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Gain",
+        "Gain",
+        juce::NormalisableRange<float>(0.0f, 1.0f),
+        0.5f));
     return layout;
 }
 
