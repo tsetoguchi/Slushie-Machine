@@ -187,7 +187,7 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     rightChain.process(rightContext);
 
     buffer.applyGain(settingsOfParameters.gainSetting); // this line solely for volume 
-
+    
     int delayTimeInSamples = settingsOfParameters.delayTime * mySampleRate; 
     delayLine.setDelay(delayTimeInSamples); 
 
