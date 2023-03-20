@@ -109,6 +109,20 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
     rightChain.prepare(spec);
 
     updateFilters();
+
+
+    // this is a second spec for delayLine from dsp_module (they all need to be processed with a spec)
+    juce::dsp::ProcessSpec spec2;
+
+    spec2.maximumBlockSize = samplesPerBlock;
+    spec2.numChannels = getTotalNumInputChannels();
+    spec2.sampleRate = sampleRate;
+
+    delayLine.reset();
+    delayLine.prepare(spec2);
+    delayLine.setDelay(24000);
+
+    mySampleRate = sampleRate;
 }
 
 void HiLowCutPluginAudioProcessor::releaseResources()
@@ -159,7 +173,7 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         buffer.clear (i, 0, buffer.getNumSamples());
 
     updateFilters();
-    ChainSettings settingsForGain = getChainSettings(apvts);
+    ChainSettings settingsOfParameters = getChainSettings(apvts);
 
     juce::dsp::AudioBlock<float> block(buffer);
 
@@ -172,7 +186,27 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     leftChain.process(leftContext);
     rightChain.process(rightContext);
 
-    buffer.applyGain(settingsForGain.gainSetting);
+    buffer.applyGain(settingsOfParameters.gainSetting); // this line solely for volume 
+
+    int delayTimeInSamples = settingsOfParameters.delayTime * mySampleRate; 
+    delayLine.setDelay(delayTimeInSamples); 
+
+
+
+    for (int channel = 0; channel < totalNumInputChannels; channel++) {
+
+        auto* inSamples = buffer.getReadPointer(channel); 
+        auto* outSamples = buffer.getWritePointer(channel);
+
+
+        for (int i = 0; i < buffer.getNumSamples(); i++) {
+
+            float delayedSample = delayLine.popSample(channel);
+            float newSampleToPush = inSamples[i] + (delayedSample * settingsOfParameters.feedBack);
+            delayLine.pushSample(channel, newSampleToPush);
+            outSamples[i] = inSamples[i] + delayedSample; 
+        }
+    }
 
 
     
@@ -225,18 +259,22 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts) {
     settings.highCutSlope = static_cast<Slope>(apvts.getRawParameterValue("HiCut Slope")->load());
 
     settings.gainSetting = apvts.getRawParameterValue("Gain")->load(); 
-   
+
+    settings.delayTime = apvts.getRawParameterValue("Delay Time")->load();
+    settings.delayTime =  apvts.getRawParameterValue("Feedback")->load();
 
     return settings; 
 }
 
-    // this function below sets up the paramter layout for all the paramters that will be available to be changed in the gui
-
+    // this function below sets up the parameter layout for all the parameters that will be available to be changed in the gui
 
 juce::AudioProcessorValueTreeState::ParameterLayout
 HiLowCutPluginAudioProcessor::createParameterLayout() {
 
-    juce::AudioProcessorValueTreeState::ParameterLayout layout;
+    juce::AudioProcessorValueTreeState::ParameterLayout layout; // we add any parameter to be created to this
+
+
+    // Parameters for HI/LOW Cut
 
     layout.add(std::make_unique<juce::AudioParameterFloat>("LowCut Freq",
         "LowCut Freq",
@@ -259,10 +297,28 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
 
     layout.add(std::make_unique<juce::AudioParameterChoice>("LowCut Slope", "LowCut Slope", stringArray, 0));
     layout.add(std::make_unique<juce::AudioParameterChoice>("HiCut Slope", "HiCut Slope", stringArray, 0));
+
+
+    // Parameters for Gain
+
     layout.add(std::make_unique<juce::AudioParameterFloat>("Gain",
         "Gain",
         juce::NormalisableRange<float>(0.0f, 1.0f),
         0.5f));
+
+
+    // Parameters for Delay 
+
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Feedback",
+        "Feedback",
+        0.01f,0.09f,
+        0.5f));
+
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Delay Time",
+        "Delay Time",
+        0.01f, 0.9f,
+        0.5f));
+
     return layout;
 }
 

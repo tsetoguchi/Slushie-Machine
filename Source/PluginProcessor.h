@@ -24,6 +24,10 @@ struct ChainSettings
     Slope lowCutSlope{ Slope::Slope_12 }, highCutSlope{ Slope::Slope_12 };
 
     float gainSetting{ 0.0f };
+
+    float delayTime{ 0.25f };
+
+    float feedBack{ 0.25f };
 };
 
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
@@ -80,8 +84,11 @@ public:
 
 private:
 
+    // this is the dsp delayLine
+    juce::dsp::DelayLine<float, juce::dsp::DelayLineInterpolationTypes::Linear> delayLine{ 192000 };
+    double mySampleRate{ 0.0 };
 
-
+    //these namespaces are used to create the filter chains (since there are 4 slopes we need 4 filters)
     using Filter = juce::dsp::IIR::Filter<float>;
 
     using CutFilter = juce::dsp::ProcessorChain<Filter, Filter, Filter, Filter>;
