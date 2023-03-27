@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="YB1fl2" name="HiLowCutPlugin" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" displaySplashScreen="1">
   <MAINGROUP id="JjYqXG" name="HiLowCutPlugin">
     <GROUP id="{0A47AB2F-36AC-EF95-7269-B2F4CCB9CCDA}" name="Source">
       <FILE id="ZUGcpy" name="PluginProcessor.cpp" compile="1" resource="0"

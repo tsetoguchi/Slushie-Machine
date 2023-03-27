@@ -187,9 +187,16 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     rightChain.process(rightContext);
 
     buffer.applyGain(settingsOfParameters.gainSetting); // this line solely for volume 
+
+    // reset the delayLine if the delayTime is 0
+    if (settingsOfParameters.delayTime == 0) {
+        delayLine.reset();
+    }
+    else {
+        int delayTimeInSamples = settingsOfParameters.delayTime * mySampleRate;
+        delayLine.setDelay(delayTimeInSamples);
+    }
     
-    int delayTimeInSamples = settingsOfParameters.delayTime * mySampleRate; 
-    delayLine.setDelay(delayTimeInSamples); 
 
 
 
@@ -311,13 +318,14 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
 
     layout.add(std::make_unique<juce::AudioParameterFloat>("Feedback",
         "Feedback",
-        0.01f,0.09f,
-        0.5f));
+        0.00f, 0.09f,
+        0.0f));
 
     layout.add(std::make_unique<juce::AudioParameterFloat>("Delay Time",
         "Delay Time",
-        0.01f, 0.9f,
-        0.5f));
+        0.00f, 0.9f,
+        0.0f));
+
 
     return layout;
 }
@@ -342,7 +350,7 @@ void HiLowCutPluginAudioProcessor::updateLowCutFilters(const ChainSettings& chai
 
 void HiLowCutPluginAudioProcessor::updateHighCutFilters(const ChainSettings& chainSettings)
 {
-    auto highCutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(chainSettings.highCutFreq, getSampleRate(), 2 * (chainSettings.highCutSlope + 1));
+    auto highCutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(chainSettings.highCutFreq, getSampleRate(), 20 * (chainSettings.highCutSlope + 1));
 
     auto& leftHighCut = leftChain.get<chainPositions::HighCut>();
     updateCutFilter(leftHighCut, highCutCoefficients, chainSettings.highCutSlope);
