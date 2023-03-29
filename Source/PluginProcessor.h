@@ -30,6 +30,9 @@ struct ChainSettings
     float feedBack{ 0.25f };
 
     float chorusMix{ 0.0f };
+    
+    float limiterThreshold{ -3.0f };
+
 };
 
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);

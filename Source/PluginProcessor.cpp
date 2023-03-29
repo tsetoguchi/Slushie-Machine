@@ -320,6 +320,8 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts) {
 
     settings.chorusMix = apvts.getRawParameterValue("Chorus Mix")->load();
 
+    settings.limiterThreshold = apvts.getRawParameterValue("Limiter Threshold")->load();
+
     return settings; 
 }
 
@@ -383,6 +385,8 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
         0.00f, 1.0f,
         0.0f));
 
+    // Parameter for SAFETY Limiter
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Limiter Threshold", "Limiter Threshold", -100.0f, 0.0f, -6.0f));
 
     return layout;
 }
