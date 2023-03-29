@@ -122,6 +122,12 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
     delayLine.prepare(spec2);
     delayLine.setDelay(24000);
 
+    chorus.reset();
+    chorus.prepare(spec2);
+    chorus.setCentreDelay(15);
+    chorus.setDepth(0.5);
+    chorus.setRate(8);
+    chorus.setFeedback(0.5);
     mySampleRate = sampleRate;
 }
 
@@ -180,6 +186,13 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     auto leftBlock = block.getSingleChannelBlock(0);
     auto rightBlock = block.getSingleChannelBlock(1);
 
+    // chorus processing
+
+    juce::dsp::AudioBlock<float> sampleBlock(buffer);
+    chorus.setMix(settingsOfParameters.chorusMix);
+    chorus.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
+    
+
     juce::dsp::ProcessContextReplacing<float> leftContext(leftBlock);
     juce::dsp::ProcessContextReplacing<float> rightContext(rightBlock);
 
@@ -203,9 +216,6 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     delayLine.process(rightContext);*/
     //we would use the process function above if we wanted to have a delay
     //that does not change and cant be changed by sliders so like just constant  
-    
-
-
 
     for (int channel = 0; channel < totalNumInputChannels; channel++) {
 
@@ -221,8 +231,6 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
             outSamples[i] = inSamples[i] + delayedSample; 
         }
     }
-
-
     
 }
 
@@ -275,6 +283,8 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts) {
 
     settings.delayTime = apvts.getRawParameterValue("Delay Time")->load();
     settings.delayTime =  apvts.getRawParameterValue("Feedback")->load();
+
+    settings.chorusMix = apvts.getRawParameterValue("Chorus Mix")->load();
 
     return settings; 
 }
@@ -330,6 +340,13 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
     layout.add(std::make_unique<juce::AudioParameterFloat>("Delay Time",
         "Delay Time",
         0.00f, 0.9f,
+        0.0f));
+
+    // Parameters for Chorus
+
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Chorus Mix",
+        "Chorus Mix",
+        0.00f, 1.0f,
         0.0f));
 
 
