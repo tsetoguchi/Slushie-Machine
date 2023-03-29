@@ -199,6 +199,13 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     
 
 
+   /* delayLine.process(leftContext);
+    delayLine.process(rightContext);*/
+    //we would use the process function above if we wanted to have a delay
+    //that does not change and cant be changed by sliders so like just constant  
+    
+
+
 
     for (int channel = 0; channel < totalNumInputChannels; channel++) {
 
@@ -257,7 +264,6 @@ void HiLowCutPluginAudioProcessor::setStateInformation (const void* data, int si
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts) {
 
     ChainSettings settings; 
-
 
     settings.lowCutFreq = apvts.getRawParameterValue("LowCut Freq")->load();
     settings.highCutFreq = apvts.getRawParameterValue("HiCut Freq")->load();
