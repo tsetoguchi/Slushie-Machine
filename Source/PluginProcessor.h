@@ -86,6 +86,9 @@ public:
 
 private:
 
+    // SAFETY LIMITER
+    juce::dsp::Limiter<float> limiter;
+
     // this is the dsp delayLine
     juce::dsp::DelayLine<float, juce::dsp::DelayLineInterpolationTypes::Linear> delayLine{ 192000 };
     double mySampleRate{ 0.0 };

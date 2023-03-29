@@ -118,10 +118,14 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
     spec2.numChannels = getTotalNumInputChannels();
     spec2.sampleRate = sampleRate;
 
+
+    // DELAY SETTERS
     delayLine.reset();
     delayLine.prepare(spec2);
     delayLine.setDelay(24000);
 
+
+    // CHORUS SETTERS
     chorus.reset();
     chorus.prepare(spec2);
     chorus.setCentreDelay(15);
@@ -129,6 +133,10 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
     chorus.setRate(8);
     chorus.setFeedback(0.5);
     mySampleRate = sampleRate;
+
+    // SAFETY LIMITER
+    limiter.reset();
+    limiter.prepare(spec2);
 }
 
 void HiLowCutPluginAudioProcessor::releaseResources()
@@ -191,6 +199,10 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     juce::dsp::AudioBlock<float> sampleBlock(buffer);
     chorus.setMix(settingsOfParameters.chorusMix);
     chorus.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
+
+    limiter.setRelease(40.0f);
+    limiter.setThreshold(-10.0f);
+    limiter.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
     
 
     juce::dsp::ProcessContextReplacing<float> leftContext(leftBlock);
@@ -231,6 +243,28 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
             outSamples[i] = inSamples[i] + delayedSample; 
         }
     }
+
+    // Distortion Processing
+    //for (int channel = 0; channel < totalNumInputChannels; channel++) {
+
+    //    auto* inSamples = buffer.getReadPointer(channel);
+    //    auto* outSamples = buffer.getWritePointer(channel);
+
+
+    //    for (int i = 0; i < buffer.getNumSamples(); i++) {
+    //        int y = 0;
+    //        if (inSamples[i] > 0) {
+    //            y = 1 - exp(-inSamples[i]);
+    //        }
+    //        else {
+    //            y = -1 + exp(inSamples[i]);
+    //        }
+    //        float distortedSample = inSamples[i] / abs(inSamples[i]) * y;
+    //        float newSampleToPush = inSamples[i] + (distortedSample * settingsOfParameters.feedBack);
+    //        delayLine.pushSample(channel, newSampleToPush);
+    //        outSamples[i] = inSamples[i] + distortedSample;
+    //    }
+    //}
     
 }
 
