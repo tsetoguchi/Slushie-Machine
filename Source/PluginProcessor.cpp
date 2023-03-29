@@ -350,7 +350,7 @@ void HiLowCutPluginAudioProcessor::updateLowCutFilters(const ChainSettings& chai
 
 void HiLowCutPluginAudioProcessor::updateHighCutFilters(const ChainSettings& chainSettings)
 {
-    auto highCutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(chainSettings.highCutFreq, getSampleRate(), 20 * (chainSettings.highCutSlope + 1));
+    auto highCutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(chainSettings.highCutFreq, getSampleRate(), 100 * (chainSettings.highCutSlope + 1));
 
     auto& leftHighCut = leftChain.get<chainPositions::HighCut>();
     updateCutFilter(leftHighCut, highCutCoefficients, chainSettings.highCutSlope);
