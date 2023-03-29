@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 
+
 enum Slope {
     Slope_12, 
     Slope_24, 
