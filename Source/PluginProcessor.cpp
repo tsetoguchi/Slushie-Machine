@@ -144,6 +144,10 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
     safetyCompressor.setRatio(100.0f);
     safetyCompressor.setThreshold(-10.0f);
 
+    waveshaper.functionToUse = [](float x) {
+        return std::tan(x);
+    };
+
     updateKnob1();
 }
 
@@ -203,13 +207,10 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     auto rightBlock = block.getSingleChannelBlock(1);
 
     // chorus processing
-
     juce::dsp::AudioBlock<float> sampleBlock(buffer);
     chorus.setMix(settingsOfParameters.chorusMix);
     updateKnob1();
     chorus.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
-
-
     
 
     juce::dsp::ProcessContextReplacing<float> leftContext(leftBlock);
@@ -274,6 +275,7 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     //    }
     //}
     
+    safetyCompressor.setThreshold(settingsOfParameters.compressorThreshold);
     safetyCompressor.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
 
 }

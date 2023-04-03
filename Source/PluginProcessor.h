@@ -99,6 +99,9 @@ private:
     juce::dsp::DelayLine<float, juce::dsp::DelayLineInterpolationTypes::Linear> delayLine{ 192000 };
     double mySampleRate{ 0.0 };
 
+    // waveshaper
+    juce::dsp::WaveShaper<float> waveshaper;
+
     // chorus
     juce::dsp::Chorus<float> chorus;
 
