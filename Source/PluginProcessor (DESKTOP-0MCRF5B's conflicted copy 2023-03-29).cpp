@@ -90,9 +90,7 @@ void HiLowCutPluginAudioProcessor::changeProgramName (int index, const juce::Str
 {
 }
 
-void setSafetyLimiter(juce::dsp::Limiter<float> limiter, juce::dsp::ProcessSpec spec) {
-// nothing atm
-}
+
 
 //==============================================================================
 void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -131,20 +129,14 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
     chorus.reset();
     chorus.prepare(spec2);
     chorus.setCentreDelay(15);
-    //chorus.setDepth(0.5);
-    chorus.setRate(0.5);
-    //chorus.setFeedback(0.5);
+    chorus.setDepth(0.5);
+    chorus.setRate(8);
+    chorus.setFeedback(0.5);
     mySampleRate = sampleRate;
 
     // SAFETY LIMITER
-    safetyCompressor.reset();
-    safetyCompressor.prepare(spec2);
-    safetyCompressor.setRelease(40.0f);
-    safetyCompressor.setAttack(10.0f);
-    safetyCompressor.setRatio(100.0f);
-    safetyCompressor.setThreshold(-10.0f);
-
-    updateKnob1();
+    limiter.reset();
+    limiter.prepare(spec2);
 }
 
 void HiLowCutPluginAudioProcessor::releaseResources()
@@ -206,10 +198,11 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
 
     juce::dsp::AudioBlock<float> sampleBlock(buffer);
     chorus.setMix(settingsOfParameters.chorusMix);
-    updateKnob1();
     chorus.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
 
-
+    limiter.setRelease(40.0f);
+    limiter.setThreshold(-10.0f);
+    limiter.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
     
 
     juce::dsp::ProcessContextReplacing<float> leftContext(leftBlock);
@@ -246,7 +239,6 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
 
             float delayedSample = delayLine.popSample(channel);
             float newSampleToPush = inSamples[i] + (delayedSample * settingsOfParameters.feedBack);
-            // instead of setting settingsOfParameters.feedBack TRY settingsOfParameters.knob1 * 0.1 aka maxDelayFeedback
             delayLine.pushSample(channel, newSampleToPush);
             outSamples[i] = inSamples[i] + delayedSample; 
         }
@@ -274,8 +266,6 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     //    }
     //}
     
-    safetyCompressor.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
-
 }
 
 //==============================================================================
@@ -329,10 +319,6 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts) {
     settings.delayTime =  apvts.getRawParameterValue("Feedback")->load();
 
     settings.chorusMix = apvts.getRawParameterValue("Chorus Mix")->load();
-
-    settings.compressorThreshold = apvts.getRawParameterValue("Compressor Threshold")->load();
-
-    settings.knob1 = apvts.getRawParameterValue("Knob 1")->load();
 
     return settings; 
 }
@@ -397,14 +383,7 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
         0.00f, 1.0f,
         0.0f));
 
-    // Parameter for SAFETY Compressor
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Compressor Threshold", "Compressor Threshold", -100.0f, 0.0f, -6.0f));
 
-
-
-    // Knob 1
-    //ChorusDepth(0 - 0.5) -  ChorusFeedback(0 - 0.1) - DelayFeedback(0 - 0.1)
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Knob 1", "Knob 1", 0.0f, 1.0f, 0.0f));
     return layout;
 }
 
@@ -442,21 +421,6 @@ void HiLowCutPluginAudioProcessor::updateFilters() {
     updateHighCutFilters(chainSettings);
     updateLowCutFilters(chainSettings);
 }
-
-
-
-void HiLowCutPluginAudioProcessor::updateKnob1() {
-    auto chainSettings = getChainSettings(apvts);
-    auto coefficient = chainSettings.knob1;
-
-    float maxDepth = 0.5;
-    float maxChorusFeedback = 0.1;
-    float maxDelayFeedback = 0.1;
-
-    chorus.setDepth(coefficient * maxDepth);
-    chorus.setFeedback(coefficient * maxChorusFeedback);
-}
-
 
 
 

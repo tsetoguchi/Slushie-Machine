@@ -10,7 +10,6 @@
 
 #include <JuceHeader.h>
 
-
 enum Slope {
     Slope_12, 
     Slope_24, 
@@ -31,11 +30,6 @@ struct ChainSettings
     float feedBack{ 0.25f };
 
     float chorusMix{ 0.0f };
-
-    float knob1{ 0.0f };
-    
-    float compressorThreshold { -3.0f };
-
 };
 
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
@@ -93,7 +87,7 @@ public:
 private:
 
     // SAFETY LIMITER
-    juce::dsp::Compressor<float> safetyCompressor;
+    juce::dsp::Limiter<float> limiter;
 
     // this is the dsp delayLine
     juce::dsp::DelayLine<float, juce::dsp::DelayLineInterpolationTypes::Linear> delayLine{ 192000 };
@@ -162,8 +156,6 @@ private:
     void updateHighCutFilters(const ChainSettings& chainSettings);
 
     void updateFilters();
-
-    void updateKnob1();
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HiLowCutPluginAudioProcessor)
 };
