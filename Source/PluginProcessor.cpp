@@ -144,12 +144,64 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
     safetyCompressor.setRatio(100.0f);
     safetyCompressor.setThreshold(-10.0f);
 
-    waveshaper.functionToUse = [](float x) {
-        return std::tan(x);
+    waveshaper.functionToUse = [](float x)
+    {
+        float out = x;
+
+        if (x <= -1.7f)
+            out = -1.0f;
+        else if ((x > -1.7f) && (x < -0.3f))
+        {
+            x += 0.3f;
+            out = x + (x * x) / (4 * (1 - 0.3f)) - 0.3f;
+        }
+        else if ((x > 0.9f) && (x < 1.1f))
+        {
+            x -= 0.9f;
+            out = x - (x * x) / (4 * (1 - 0.9f)) + 0.9f;
+        }
+        else if (x > 1.1f)
+            out = 1.0f;
+
+        return out;
+
     };
 
-    updateKnob1();
+    updateKnobs();
+    
 }
+
+float HiLowCutPluginAudioProcessor::sgnDist(float x) {
+        float y = 0;
+        if (x > 0) {
+            y = 1 - exp(-x);
+        }
+        else {
+            y = -1 + exp(x);
+        }
+        return y;
+}
+
+float HiLowCutPluginAudioProcessor::janosDist(float x) {
+    float out = x;
+
+    if (x <= -1.7f)
+        out = -1.0f;
+    else if ((x > -1.7f) && (x < -0.3f))
+    {
+        x += 0.3f;
+        out = x + (x * x) / (4 * (1 - 0.3f)) - 0.3f;
+    }
+    else if ((x > 0.9f) && (x < 1.1f))
+    {
+        x -= 0.9f;
+        out = x - (x * x) / (4 * (1 - 0.9f)) + 0.9f;
+    }
+    else if (x > 1.1f)
+        out = 1.0f;
+
+    return out;
+};
 
 void HiLowCutPluginAudioProcessor::releaseResources()
 {
@@ -209,7 +261,6 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     // chorus processing
     juce::dsp::AudioBlock<float> sampleBlock(buffer);
     chorus.setMix(settingsOfParameters.chorusMix);
-    updateKnob1();
     chorus.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
     
 
@@ -219,17 +270,7 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     leftChain.process(leftContext);
     rightChain.process(rightContext);
 
-    buffer.applyGain(settingsOfParameters.gainSetting); // this line solely for volume 
-
-    // reset the delayLine if the delayTime is 0
-    if (settingsOfParameters.delayTime == 0) {
-        delayLine.reset();
-    }
-    else {
-        int delayTimeInSamples = settingsOfParameters.delayTime * mySampleRate;
-        delayLine.setDelay(delayTimeInSamples);
-    }
-    
+    buffer.applyGain(settingsOfParameters.gainSetting); // this line solely for volume     
 
 
    /* delayLine.process(leftContext);
@@ -275,6 +316,41 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     //    }
     //}
     
+    buffer.applyGain(settingsOfParameters.distDrive);
+
+
+    // if the waveshaper is not bypassed
+    if (!settingsOfParameters.distBypass) {
+        waveshaper.functionToUse = [](float x)
+        {
+            float out = x;
+
+            if (x <= -1.7f)
+                out = -1.0f;
+            else if ((x > -1.7f) && (x < -0.3f))
+            {
+                x += 0.3f;
+                out = x + (x * x) / (4 * (1 - 0.3f)) - 0.3f;
+            }
+            else if ((x > 0.9f) && (x < 1.1f))
+            {
+                x -= 0.9f;
+                out = x - (x * x) / (4 * (1 - 0.9f)) + 0.9f;
+            }
+            else if (x > 1.1f)
+                out = 1.0f;
+
+            return out;
+        };
+
+        waveshaper.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
+    }
+    else {
+        waveshaper.reset();
+    }
+
+    updateKnobs();
+
     safetyCompressor.setThreshold(settingsOfParameters.compressorThreshold);
     safetyCompressor.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
 
@@ -332,9 +408,17 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts) {
 
     settings.chorusMix = apvts.getRawParameterValue("Chorus Mix")->load();
 
+    settings.distDrive = apvts.getRawParameterValue("Dist Drive")->load();
+
+    settings.distBypass = apvts.getRawParameterValue("Dist Bypass")->load();
+
     settings.compressorThreshold = apvts.getRawParameterValue("Compressor Threshold")->load();
 
     settings.knob1 = apvts.getRawParameterValue("Knob 1")->load();
+
+    settings.knob2 = apvts.getRawParameterValue("Knob 2")->load();
+
+    settings.knob3 = apvts.getRawParameterValue("Knob 3")->load();
 
     return settings; 
 }
@@ -389,7 +473,7 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
 
     layout.add(std::make_unique<juce::AudioParameterFloat>("Delay Time",
         "Delay Time",
-        0.00f, 0.9f,
+        0.00f, 1.0f,
         0.0f));
 
     // Parameters for Chorus
@@ -399,6 +483,11 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
         0.00f, 1.0f,
         0.0f));
 
+    layout.add(std::make_unique<juce::AudioParameterBool>("Dist Bypass", "Dist Bypass", true));
+
+    // Parameter for Distortion Drive
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Dist Drive", "Dist Drive", 0.0f, 6.0f, 0.0f));
+
     // Parameter for SAFETY Compressor
     layout.add(std::make_unique<juce::AudioParameterFloat>("Compressor Threshold", "Compressor Threshold", -100.0f, 0.0f, -6.0f));
 
@@ -407,6 +496,16 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
     // Knob 1
     //ChorusDepth(0 - 0.5) -  ChorusFeedback(0 - 0.1) - DelayFeedback(0 - 0.1)
     layout.add(std::make_unique<juce::AudioParameterFloat>("Knob 1", "Knob 1", 0.0f, 1.0f, 0.0f));
+    
+    // Knob 2
+    // ChorusCentreDelay - DelayDelayTime
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Knob 2", "Knob 2", 0.0f, 1.0f, 0.0f));
+
+    // Knob 3
+    // ChorusMix - SaturationDrive
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Knob 3", "Knob 3", 0.0f, 1.0f, 0.0f));
+
+
     return layout;
 }
 
@@ -451,13 +550,46 @@ void HiLowCutPluginAudioProcessor::updateKnob1() {
     auto chainSettings = getChainSettings(apvts);
     auto coefficient = chainSettings.knob1;
 
-    float maxDepth = 0.5;
+    float maxChorusDepth = 0.5;
     float maxChorusFeedback = 0.1;
     float maxDelayFeedback = 0.1;
 
-    chorus.setDepth(coefficient * maxDepth);
+    chorus.setDepth(coefficient * maxChorusDepth);
     chorus.setFeedback(coefficient * maxChorusFeedback);
 }
+
+void HiLowCutPluginAudioProcessor::updateKnob2() {
+    auto chainSettings = getChainSettings(apvts);
+    auto coefficient = chainSettings.knob2;
+
+    float maxChorusDelay = 15;
+    float maxDelayDelayTime = 1;
+    chorus.setCentreDelay(coefficient * maxChorusDelay);
+
+    // reset the delayLine if the delayTime is 0
+    if (chainSettings.delayTime == 0) {
+        delayLine.reset();
+    }
+    else {
+        int delayTimeInSamples = chainSettings.delayTime * mySampleRate * maxDelayDelayTime;
+        delayLine.setDelay(delayTimeInSamples);
+    }
+}
+
+void HiLowCutPluginAudioProcessor::updateKnob3() {
+    auto chainSettings = getChainSettings(apvts);
+    auto coefficient = chainSettings.knob3;
+
+    float maxChorusMix = 1;
+    chorus.setMix(coefficient * maxChorusMix);
+}
+
+void HiLowCutPluginAudioProcessor::updateKnobs() {
+    updateKnob1();
+    updateKnob2();
+    updateKnob3();
+}
+
 
 
 

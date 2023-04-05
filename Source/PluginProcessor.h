@@ -32,9 +32,17 @@ struct ChainSettings
 
     float chorusMix{ 0.0f };
 
-    float knob1{ 0.0f };
+    float knob1 { 0.0f };
+
+    float knob2 { 0.0f };
     
+    float knob3 { 0.0f };
+
     float compressorThreshold { -3.0f };
+
+    float distDrive{ 0.0f };
+
+    bool distBypass{ true };
 
 };
 
@@ -89,6 +97,8 @@ public:
     static juce::AudioProcessorValueTreeState::ParameterLayout
         createParameterLayout();
     juce::AudioProcessorValueTreeState apvts{ *this, nullptr, "Parameters", createParameterLayout() };
+
+
 
 private:
 
@@ -166,7 +176,15 @@ private:
 
     void updateFilters();
 
+    void updateKnobs();
     void updateKnob1();
+    void updateKnob2();
+    void updateKnob3();
+
+    float janosDist(float x);
+    float sgnDist(float x);
+
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HiLowCutPluginAudioProcessor)
 };
