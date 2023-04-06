@@ -174,6 +174,8 @@ private:
     void updateLowCutFilters(const ChainSettings& chainSettings);
     void updateHighCutFilters(const ChainSettings& chainSettings);
 
+    //void setAntiAliasFilter(const ChainSettings& chainSettings);
+
     void updateFilters();
 
     void updateKnobs();
@@ -184,7 +186,7 @@ private:
     float janosDist(float x);
     float sgnDist(float x);
 
-
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HiLowCutPluginAudioProcessor)
 };

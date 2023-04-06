@@ -250,7 +250,7 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    updateFilters();
+    
     ChainSettings settingsOfParameters = getChainSettings(apvts);
 
     juce::dsp::AudioBlock<float> block(buffer);
@@ -317,6 +317,7 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     //}
     
     buffer.applyGain(settingsOfParameters.distDrive);
+    
 
 
     // if the waveshaper is not bypassed
@@ -350,7 +351,7 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     }
 
     updateKnobs();
-
+    updateFilters();
     safetyCompressor.setThreshold(settingsOfParameters.compressorThreshold);
     safetyCompressor.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
 
@@ -486,7 +487,7 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
     layout.add(std::make_unique<juce::AudioParameterBool>("Dist Bypass", "Dist Bypass", true));
 
     // Parameter for Distortion Drive
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Dist Drive", "Dist Drive", 0.0f, 6.0f, 0.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Dist Drive", "Dist Drive", 1.0f, 12.0f, 0.0f));
 
     // Parameter for SAFETY Compressor
     layout.add(std::make_unique<juce::AudioParameterFloat>("Compressor Threshold", "Compressor Threshold", -100.0f, 0.0f, -6.0f));
@@ -538,13 +539,23 @@ void HiLowCutPluginAudioProcessor::updateHighCutFilters(const ChainSettings& cha
     updateCutFilter(rightHighCut, highCutCoefficients, chainSettings.highCutSlope);
 }
 
+//void HiLowCutPluginAudioProcessor::setAntiAliasFilter(const ChainSettings& chainSettings) {
+//    auto highCutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(chainSettings.antiAliasFilterFreq, getSampleRate(), 6);
+//    auto& leftHighCut = leftChain.get<chainPositions::HighCut>();
+//    auto& rightHighCut = rightChain.get<chainPositions::HighCut>();
+//}
+
 void HiLowCutPluginAudioProcessor::updateFilters() {
     auto chainSettings = getChainSettings(apvts);
     updateHighCutFilters(chainSettings);
     updateLowCutFilters(chainSettings);
 }
 
-
+void HiLowCutPluginAudioProcessor::updateKnobs() {
+    updateKnob1();
+    updateKnob2();
+    updateKnob3();
+}
 
 void HiLowCutPluginAudioProcessor::updateKnob1() {
     auto chainSettings = getChainSettings(apvts);
@@ -584,11 +595,7 @@ void HiLowCutPluginAudioProcessor::updateKnob3() {
     chorus.setMix(coefficient * maxChorusMix);
 }
 
-void HiLowCutPluginAudioProcessor::updateKnobs() {
-    updateKnob1();
-    updateKnob2();
-    updateKnob3();
-}
+
 
 
 
