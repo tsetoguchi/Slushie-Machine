@@ -108,6 +108,7 @@ private:
     // this is the dsp delayLine
     juce::dsp::DelayLine<float, juce::dsp::DelayLineInterpolationTypes::Linear> delayLine{ 192000 };
     double mySampleRate{ 0.0 };
+    float maxDelayDelayTime{ 0.0 };
 
     // waveshaper
     juce::dsp::WaveShaper<float> waveshaper;

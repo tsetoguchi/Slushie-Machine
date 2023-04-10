@@ -133,6 +133,7 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
     chorus.setCentreDelay(15);
     //chorus.setDepth(0.5);
     chorus.setRate(0.5);
+    chorus.setMix(1.0f);
     //chorus.setFeedback(0.5);
     mySampleRate = sampleRate;
 
@@ -258,9 +259,11 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     auto leftBlock = block.getSingleChannelBlock(0);
     auto rightBlock = block.getSingleChannelBlock(1);
 
+    updateKnobs();
+
     // chorus processing
     juce::dsp::AudioBlock<float> sampleBlock(buffer);
-    chorus.setMix(settingsOfParameters.chorusMix);
+    //chorus.setMix(settingsOfParameters.chorusMix);
     chorus.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
     
 
@@ -272,6 +275,7 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
 
     buffer.applyGain(settingsOfParameters.gainSetting); // this line solely for volume     
 
+   
 
    /* delayLine.process(leftContext);
     delayLine.process(rightContext);*/
@@ -350,7 +354,7 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         waveshaper.reset();
     }
 
-    updateKnobs();
+    
     updateFilters();
     safetyCompressor.setThreshold(settingsOfParameters.compressorThreshold);
     safetyCompressor.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
@@ -552,6 +556,7 @@ void HiLowCutPluginAudioProcessor::updateFilters() {
 }
 
 void HiLowCutPluginAudioProcessor::updateKnobs() {
+    
     updateKnob1();
     updateKnob2();
     updateKnob3();
@@ -561,7 +566,7 @@ void HiLowCutPluginAudioProcessor::updateKnob1() {
     auto chainSettings = getChainSettings(apvts);
     auto coefficient = chainSettings.knob1;
 
-    float maxChorusDepth = 0.5;
+    float maxChorusDepth = 1.0;
     float maxChorusFeedback = 0.1;
     float maxDelayFeedback = 0.1;
 
@@ -574,15 +579,15 @@ void HiLowCutPluginAudioProcessor::updateKnob2() {
     auto coefficient = chainSettings.knob2;
 
     float maxChorusDelay = 15;
-    float maxDelayDelayTime = 1;
+    float maxDelayDelayTime = 0.05;
     chorus.setCentreDelay(coefficient * maxChorusDelay);
 
     // reset the delayLine if the delayTime is 0
-    if (chainSettings.delayTime == 0) {
+    if (coefficient == 0) {
         delayLine.reset();
     }
     else {
-        int delayTimeInSamples = chainSettings.delayTime * mySampleRate * maxDelayDelayTime;
+        int delayTimeInSamples = coefficient * mySampleRate * maxDelayDelayTime;
         delayLine.setDelay(delayTimeInSamples);
     }
 }
