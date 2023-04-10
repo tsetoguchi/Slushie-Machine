@@ -24,14 +24,6 @@ struct ChainSettings
 
     Slope lowCutSlope{ Slope::Slope_12 }, highCutSlope{ Slope::Slope_12 };
 
-    float gainSetting{ 0.0f };
-
-    float delayTime{ 0.25f };
-
-    float feedBack{ 0.25f };
-
-    float chorusMix{ 0.0f };
-
     float knob1 { 0.0f };
 
     float knob2 { 0.0f };

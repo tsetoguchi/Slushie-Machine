@@ -273,8 +273,6 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     leftChain.process(leftContext);
     rightChain.process(rightContext);
 
-    buffer.applyGain(settingsOfParameters.gainSetting); // this line solely for volume     
-
    
 
    /* delayLine.process(leftContext);
@@ -284,14 +282,21 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
 
     for (int channel = 0; channel < totalNumInputChannels; channel++) {
 
+        if (delayLine.getDelay() == 0) {
+            break;
+        }
+
         auto* inSamples = buffer.getReadPointer(channel); 
         auto* outSamples = buffer.getWritePointer(channel);
 
 
+
         for (int i = 0; i < buffer.getNumSamples(); i++) {
 
+
+
             float delayedSample = delayLine.popSample(channel);
-            float newSampleToPush = inSamples[i] + (delayedSample * settingsOfParameters.feedBack);
+            float newSampleToPush = inSamples[i] + (delayedSample * (settingsOfParameters.knob1 * 0.8) );
             // instead of setting settingsOfParameters.feedBack TRY settingsOfParameters.knob1 * 0.1 aka maxDelayFeedback
             delayLine.pushSample(channel, newSampleToPush);
             outSamples[i] = inSamples[i] + delayedSample; 
@@ -406,13 +411,6 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts) {
     settings.lowCutSlope = static_cast<Slope>(apvts.getRawParameterValue("LowCut Slope")->load());
     settings.highCutSlope = static_cast<Slope>(apvts.getRawParameterValue("HiCut Slope")->load());
 
-    settings.gainSetting = apvts.getRawParameterValue("Gain")->load(); 
-
-    settings.delayTime = apvts.getRawParameterValue("Delay Time")->load();
-    settings.delayTime =  apvts.getRawParameterValue("Feedback")->load();
-
-    settings.chorusMix = apvts.getRawParameterValue("Chorus Mix")->load();
-
     settings.distDrive = apvts.getRawParameterValue("Dist Drive")->load();
 
     settings.distBypass = apvts.getRawParameterValue("Dist Bypass")->load();
@@ -463,30 +461,11 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
 
     // Parameters for Gain
 
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Gain",
-        "Gain",
-        juce::NormalisableRange<float>(0.0f, 1.0f),
-        0.5f));
-
 
     // Parameters for Delay 
 
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Feedback",
-        "Feedback",
-        0.00f, 0.09f,
-        0.0f));
-
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Delay Time",
-        "Delay Time",
-        0.00f, 1.0f,
-        0.0f));
 
     // Parameters for Chorus
-
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Chorus Mix",
-        "Chorus Mix",
-        0.00f, 1.0f,
-        0.0f));
 
     layout.add(std::make_unique<juce::AudioParameterBool>("Dist Bypass", "Dist Bypass", true));
 
@@ -584,7 +563,7 @@ void HiLowCutPluginAudioProcessor::updateKnob2() {
 
     // reset the delayLine if the delayTime is 0
     if (coefficient == 0) {
-        delayLine.reset();
+        delayLine.setDelay(0);
     }
     else {
         int delayTimeInSamples = coefficient * mySampleRate * maxDelayDelayTime;
