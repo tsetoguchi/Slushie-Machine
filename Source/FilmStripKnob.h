@@ -6,19 +6,6 @@
 class FilmStripKnob : public juce::Slider
 {
 public:
-
-	FilmStripKnob() : numFrames_(0), isHorizontal_(true) {
-		frameWidth = 0;
-		frameHeight = 0;
-	};
-
-	/*FilmStripKnob(const int numFrames, const bool stripIsHorizontal) {
-
-		numFrames_(numFrames);
-		isHorizontal_(stripIsHorizontal);
-
-	};*/
-
 	FilmStripKnob(juce::Image image, const int numFrames, const bool stripIsHorizontal, int index)
 		: Slider(juce::String(index)),
 		filmStrip(image),
@@ -32,7 +19,7 @@ public:
 		setRange(0.0f, 1.0f, 0.001f);
 
 		getProperties().set(juce::Identifier("index"), index);
-	};
+	}
 
 	void paint(juce::Graphics& g) override
 	{
