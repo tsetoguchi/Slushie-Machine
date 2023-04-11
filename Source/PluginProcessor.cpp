@@ -137,6 +137,7 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
     //chorus.setFeedback(0.5);
     mySampleRate = sampleRate;
 
+
     // SAFETY LIMITER
     safetyCompressor.reset();
     safetyCompressor.prepare(spec2);
@@ -238,9 +239,12 @@ bool HiLowCutPluginAudioProcessor::isBusesLayoutSupported (const BusesLayout& la
 
 void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
+    
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
+    
+    
 
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
@@ -253,13 +257,14 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
 
     
     ChainSettings settingsOfParameters = getChainSettings(apvts);
-
+    imager.process(buffer, totalNumInputChannels, (settingsOfParameters.knob3 * 4) + 1);
     juce::dsp::AudioBlock<float> block(buffer);
 
     auto leftBlock = block.getSingleChannelBlock(0);
     auto rightBlock = block.getSingleChannelBlock(1);
 
     updateKnobs();
+    
 
     // chorus processing
     juce::dsp::AudioBlock<float> sampleBlock(buffer);
@@ -351,6 +356,7 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
                 out = 1.0f;
 
             return out;
+
         };
 
         waveshaper.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
@@ -425,6 +431,8 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts) {
 
     settings.knob3 = apvts.getRawParameterValue("Knob 3")->load();
 
+    settings.width = apvts.getRawParameterValue("width")->load();
+
     return settings; 
 }
 
@@ -457,6 +465,7 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
         stringArray.add(str);
     }
 
+    //layout.add(std::make_unique<juce::AudioParameterChoice>("LowCut Slope", "LowCut Slope", stringArray, 0));
     layout.add(std::make_unique<juce::AudioParameterChoice>("HiCut Slope", "HiCut Slope", stringArray, 0));
 
 
@@ -490,6 +499,8 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
     // ChorusMix - SaturationDrive
     layout.add(std::make_unique<juce::AudioParameterFloat>("Knob 3", "Knob 3", 0.0f, 1.0f, 0.0f));
 
+    // width
+    layout.add(std::make_unique<juce::AudioParameterFloat>("width", "width", 1.0f, 5.0f, 1.0f));
 
     return layout;
 }
@@ -546,6 +557,7 @@ void HiLowCutPluginAudioProcessor::updateKnobs() {
 
 void HiLowCutPluginAudioProcessor::updateKnob1() {
     auto chainSettings = getChainSettings(apvts);
+
     auto coefficient = chainSettings.knob1;
 
     float maxChorusDepth = 1.0;
@@ -579,7 +591,7 @@ void HiLowCutPluginAudioProcessor::updateKnob2() {
 void HiLowCutPluginAudioProcessor::updateKnob3() {
     auto chainSettings = getChainSettings(apvts);
     auto coefficient = chainSettings.knob3;
-
+   
     float maxChorusMix = 1;
     chorus.setMix(coefficient * maxChorusMix);
 }

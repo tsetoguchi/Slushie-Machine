@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 
+#include "StereoImager.h"
 
 enum Slope {
     Slope_12, 
@@ -35,6 +36,8 @@ struct ChainSettings
     float distDrive{ 0.0f };
 
     bool distBypass{ true };
+    
+    float width{ 0.5f };
 
 };
 
@@ -104,6 +107,9 @@ private:
 
     // waveshaper
     juce::dsp::WaveShaper<float> waveshaper;
+
+    // Stereo Imager
+    StereoImager imager;
 
     // chorus
     juce::dsp::Chorus<float> chorus;
