@@ -382,8 +382,8 @@ bool HiLowCutPluginAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* HiLowCutPluginAudioProcessor::createEditor()
 {
-    //return new HiLowCutPluginAudioProcessorEditor(*this);
-    return new juce::GenericAudioProcessorEditor(*this);
+    return new HiLowCutPluginAudioProcessorEditor(*this);
+    //return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
