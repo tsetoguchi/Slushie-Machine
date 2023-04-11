@@ -164,7 +164,7 @@ private:
        }
     }
 
-    void updateLowCutFilters(const ChainSettings& chainSettings);
+    void updateAntiAliasingFilter(const ChainSettings& chainSettings);
     void updateHighCutFilters(const ChainSettings& chainSettings);
 
     //void setAntiAliasFilter(const ChainSettings& chainSettings);

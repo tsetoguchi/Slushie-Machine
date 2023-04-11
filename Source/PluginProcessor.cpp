@@ -360,10 +360,12 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     }
 
     
-    updateFilters();
+    //updateFilters();
+    updateHighCutFilters(settingsOfParameters);
+    
     safetyCompressor.setThreshold(settingsOfParameters.compressorThreshold);
     safetyCompressor.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
-
+    updateAntiAliasingFilter(settingsOfParameters);
 }
 
 //==============================================================================
@@ -408,7 +410,7 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts) {
     settings.lowCutFreq = apvts.getRawParameterValue("LowCut Freq")->load();
     settings.highCutFreq = apvts.getRawParameterValue("HiCut Freq")->load();
 
-    settings.lowCutSlope = static_cast<Slope>(apvts.getRawParameterValue("LowCut Slope")->load());
+    //settings.lowCutSlope = static_cast<Slope>(apvts.getRawParameterValue("LowCut Slope")->load());
     settings.highCutSlope = static_cast<Slope>(apvts.getRawParameterValue("HiCut Slope")->load());
 
     settings.distDrive = apvts.getRawParameterValue("Dist Drive")->load();
@@ -455,7 +457,6 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
         stringArray.add(str);
     }
 
-    layout.add(std::make_unique<juce::AudioParameterChoice>("LowCut Slope", "LowCut Slope", stringArray, 0));
     layout.add(std::make_unique<juce::AudioParameterChoice>("HiCut Slope", "HiCut Slope", stringArray, 0));
 
 
@@ -498,11 +499,13 @@ void HiLowCutPluginAudioProcessor::updateCoefficients(Coefficients& old, const C
     *old = *replacements;
 }
 
-void HiLowCutPluginAudioProcessor::updateLowCutFilters(const ChainSettings& chainSettings)
+void HiLowCutPluginAudioProcessor::updateAntiAliasingFilter(const ChainSettings& chainSettings)
 {
-    auto lowCutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.lowCutFreq,
-        getSampleRate(),
-        2 * (chainSettings.lowCutSlope + 1));
+
+    float antiAliasingFreq = 20;
+
+    auto lowCutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
+        antiAliasingFreq, getSampleRate(), 2);
 
     auto& leftLowCut = leftChain.get<chainPositions::LowCut>();
     updateCutFilter(leftLowCut, lowCutCoefficients, chainSettings.lowCutSlope);
@@ -531,7 +534,7 @@ void HiLowCutPluginAudioProcessor::updateHighCutFilters(const ChainSettings& cha
 void HiLowCutPluginAudioProcessor::updateFilters() {
     auto chainSettings = getChainSettings(apvts);
     updateHighCutFilters(chainSettings);
-    updateLowCutFilters(chainSettings);
+    updateAntiAliasingFilter(chainSettings);
 }
 
 void HiLowCutPluginAudioProcessor::updateKnobs() {
@@ -551,6 +554,8 @@ void HiLowCutPluginAudioProcessor::updateKnob1() {
 
     chorus.setDepth(coefficient * maxChorusDepth);
     chorus.setFeedback(coefficient * maxChorusFeedback);
+
+ 
 }
 
 void HiLowCutPluginAudioProcessor::updateKnob2() {
