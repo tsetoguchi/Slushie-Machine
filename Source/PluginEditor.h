@@ -31,12 +31,19 @@ private:
     // access the processor object that created it.
     HiLowCutPluginAudioProcessor& audioProcessor;
 
-    juce::Image myImage = juce::ImageFileFormat::loadFrom(BinaryData::Shape_sample_png, BinaryData::Shape_sample_pngSize);
-    juce::Image resizedImage = myImage.rescaled(myImage.getWidth()/10, myImage.getHeight()/10, juce::Graphics::highResamplingQuality);
+    // knob 1 (image and instance)
+    juce::Image knob1Image = juce::ImageFileFormat::loadFrom(BinaryData::Knob_20_png, BinaryData::Knob_20_pngSize);
+    FilmStripKnob knob1 = FilmStripKnob(knob1Image, 61, false, 0);
+
+    juce::Image knob2Image = juce::ImageFileFormat::loadFrom(BinaryData::Knob_20_png, BinaryData::Knob_20_pngSize);
+    FilmStripKnob knob2 = FilmStripKnob(knob2Image, 61, false, 0);
+
+    juce::Image knob3Image = juce::ImageFileFormat::loadFrom(BinaryData::Knob_20_png, BinaryData::Knob_20_pngSize);
+    FilmStripKnob knob3 = FilmStripKnob(knob3Image, 61, false, 0);
 
 
-    FilmStripKnob knob1 = FilmStripKnob(myImage, 31, false, 0);
-
+    // background image
+    juce::Image background; 
 
 
     std::vector<juce::Component*> getComps(); 

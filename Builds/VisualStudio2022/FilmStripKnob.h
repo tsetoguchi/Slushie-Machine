@@ -12,13 +12,6 @@ public:
 		frameHeight = 0;
 	};
 
-	/*FilmStripKnob(const int numFrames, const bool stripIsHorizontal) {
-
-		numFrames_(numFrames);
-		isHorizontal_(stripIsHorizontal);
-
-	};*/
-
 	FilmStripKnob(juce::Image image, const int numFrames, const bool stripIsHorizontal, int index)
 		: Slider(juce::String(index)),
 		filmStrip(image),
