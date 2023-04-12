@@ -31,9 +31,11 @@ private:
     // access the processor object that created it.
     HiLowCutPluginAudioProcessor& audioProcessor;
 
-    juce::Image myImage = juce::ImageFileFormat::loadFrom(BinaryData::ImageKnobz_png, BinaryData::ImageKnobz_pngSize);
-    
-    FilmStripKnob knob1 = FilmStripKnob(myImage, 60, false, 0);
+    juce::Image myImage = juce::ImageFileFormat::loadFrom(BinaryData::Shape_sample_png, BinaryData::Shape_sample_pngSize);
+    juce::Image resizedImage = myImage.rescaled(myImage.getWidth()/10, myImage.getHeight()/10, juce::Graphics::highResamplingQuality);
+
+
+    FilmStripKnob knob1 = FilmStripKnob(myImage, 31, false, 0);
 
 
 

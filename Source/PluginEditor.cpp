@@ -16,6 +16,10 @@ HiLowCutPluginAudioProcessorEditor::HiLowCutPluginAudioProcessorEditor(HiLowCutP
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
 
+    
+
+    
+
     addAndMakeVisible(knob1);
 
     for (auto* comp : getComps())
@@ -23,7 +27,7 @@ HiLowCutPluginAudioProcessorEditor::HiLowCutPluginAudioProcessorEditor(HiLowCutP
         addAndMakeVisible(comp);
     }
 
-    setSize (1600, 1400);
+    setSize (600, 400);
 }
 
 HiLowCutPluginAudioProcessorEditor::~HiLowCutPluginAudioProcessorEditor()
@@ -39,6 +43,17 @@ void HiLowCutPluginAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
     g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::top, 1);
+
+    auto bounds = getLocalBounds();
+    auto boundsTopHalf = bounds.removeFromTop(bounds.getHeight() * 0.66);
+    auto reducedRect = boundsTopHalf.reduced(50, 50);
+    reducedRect.setSize(120, 120);
+
+
+
+    
+
+    g.drawRect(reducedRect);
 }
 
 void HiLowCutPluginAudioProcessorEditor::resized()
@@ -47,12 +62,15 @@ void HiLowCutPluginAudioProcessorEditor::resized()
     // subcomponents in your editor..
 
     auto bounds = getLocalBounds();
-    auto boundsTopThird = bounds.removeFromTop(bounds.getHeight() * 0.33);
+    auto boundsTopHalf = bounds.removeFromTop(bounds.getHeight() * 0.66);
+    auto reducedRect = boundsTopHalf.reduced(50, 50);
+    reducedRect.setSize(120, 120);
 
 
-    auto knob1Area = boundsTopThird.removeFromLeft(bounds.getWidth() * 0.33);
 
-    knob1.setBounds(boundsTopThird);
+
+
+    knob1.setBounds(reducedRect);
 
 }
 
