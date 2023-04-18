@@ -12,6 +12,7 @@ public:
 		numFrames_(numFrames),
 		isHorizontal_(stripIsHorizontal)
 	{
+		//setTextBoxStyle(TextBoxBelow, 1, 30, 30); (add this line if you want to see values of the knob)
 		setTextBoxStyle(NoTextBox, 0, 0, 0);
 		setSliderStyle(RotaryVerticalDrag);
 

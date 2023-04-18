@@ -31,7 +31,7 @@ private:
     // access the processor object that created it.
     HiLowCutPluginAudioProcessor& audioProcessor;
 
-    // knob 1 (image and instance)
+    // all knobs (their images are loaded in here)
     juce::Image knob1Image = juce::ImageFileFormat::loadFrom(BinaryData::Knob_20_png, BinaryData::Knob_20_pngSize);
     FilmStripKnob knob1 = FilmStripKnob(knob1Image, 61, false, 0);
 
@@ -41,12 +41,24 @@ private:
     juce::Image knob3Image = juce::ImageFileFormat::loadFrom(BinaryData::Knob_20_png, BinaryData::Knob_20_pngSize);
     FilmStripKnob knob3 = FilmStripKnob(knob3Image, 61, false, 0);
 
+    juce::Image knob4Image = juce::ImageFileFormat::loadFrom(BinaryData::customDriveKnob_png, BinaryData::customDriveKnob_pngSize);
+    FilmStripKnob knob4 = FilmStripKnob(knob4Image, 31, false, 0);
+
+    juce::Image knob5Image = juce::ImageFileFormat::loadFrom(BinaryData::customDriveKnob_png, BinaryData::customDriveKnob_pngSize);
+    FilmStripKnob knob5 = FilmStripKnob(knob5Image, 31, false, 0);
+
+    //APVTS and attachments 
+    using APVTS = juce::AudioProcessorValueTreeState;
+    using Attachment = APVTS::SliderAttachment;
+
+    Attachment knob1Attachment, knob2Attachment, knob3Attachment;  
 
     // background image
-    juce::Image background; 
+    juce::Image background;  
 
 
     std::vector<juce::Component*> getComps(); 
+    std::vector<juce::Rectangle<int>> getKnobRectangleBounds();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HiLowCutPluginAudioProcessorEditor)
 };
