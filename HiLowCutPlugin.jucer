@@ -4,6 +4,19 @@
               useAppConfig="0" addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1"
               displaySplashScreen="1" companyName="NelwinTao">
   <MAINGROUP id="JjYqXG" name="The Slush Machine">
+    <GROUP id="{721C3124-A517-53BF-597D-CE71733254E9}" name="Images">
+      <FILE id="XHUipV" name="a_bottle.png" compile="0" resource="1" file="Images/a_bottle.png"/>
+      <FILE id="xHSI9N" name="customDriveKnob.png" compile="0" resource="1"
+            file="Images/customDriveKnob.png"/>
+      <FILE id="kOFFw5" name="Knob_20.png" compile="0" resource="1" file="Images/Knob_20.png"/>
+      <FILE id="H5mklE" name="resizedTestKnob.png" compile="0" resource="1"
+            file="Images/resizedTestKnob.png"/>
+      <FILE id="N3TPDq" name="Shape_sample.png" compile="0" resource="1"
+            file="Images/Shape_sample.png"/>
+      <FILE id="TSpPoG" name="slushie background.png" compile="0" resource="1"
+            file="Images/slushie background.png"/>
+      <FILE id="WMafEY" name="slushieKnob.png" compile="0" resource="1" file="Images/slushieKnob.png"/>
+    </GROUP>
     <GROUP id="{0A47AB2F-36AC-EF95-7269-B2F4CCB9CCDA}" name="Source">
       <FILE id="ZUGcpy" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
@@ -13,20 +26,7 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="c0VuRv" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
-    <FILE id="nawh3S" name="a_bottle.png" compile="0" resource="1" file="../../Users/owner/Desktop/knobs/a_bottle.png"/>
-    <FILE id="gQ0mYC" name="customDriveKnob.png" compile="0" resource="1"
-          file="../../Users/owner/Desktop/knobs/customDriveKnob.png"/>
     <FILE id="AsUaLX" name="FilmStripKnob.h" compile="0" resource="0" file="Source/FilmStripKnob.h"/>
-    <FILE id="nQR7rP" name="ImageKnobz.png" compile="0" resource="1" file="../../Users/owner/Documents/ImageKnobz.png"/>
-    <FILE id="DeeCdd" name="Knob_20.png" compile="0" resource="1" file="../../Users/owner/Desktop/knobs/Knob_20.png"/>
-    <FILE id="rzcqHM" name="myKnob.png" compile="0" resource="1" file="../../Users/owner/Desktop/knobs/myKnob.png"/>
-    <FILE id="CjiewU" name="resizedTestKnob.png" compile="0" resource="1"
-          file="../../Users/owner/Desktop/knobs/resizedTestKnob.png"/>
-    <FILE id="jQHMBs" name="Shape_sample.png" compile="0" resource="1"
-          file="../../Users/owner/Desktop/knobs/Shape_sample.png"/>
-    <FILE id="llq4s2" name="slushie background.png" compile="0" resource="1"
-          file="../../Users/owner/Desktop/knobs/slushie background.png"/>
-    <FILE id="Klf9o9" name="slushieKnob.png" compile="0" resource="1" file="../../Users/owner/Desktop/knobs/slushieKnob.png"/>
     <FILE id="JHXHJc" name="StereoImager.h" compile="0" resource="0" file="Source/StereoImager.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>

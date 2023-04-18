@@ -45,10 +45,10 @@ void HiLowCutPluginAudioProcessorEditor::paint (juce::Graphics& g)
 
 
     // this for loop[ is simply to visualize each bound that surrounds each knob 
-  /*  for (juce::Rectangle bound : getKnobRectangleBounds()) 
+   for (juce::Rectangle bound : getKnobRectangleBounds()) 
     {
         g.drawRect(bound);
-    }*/
+    }
 
 }
 
