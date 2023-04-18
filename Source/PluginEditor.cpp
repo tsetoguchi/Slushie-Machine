@@ -12,7 +12,8 @@
 //==============================================================================
 HiLowCutPluginAudioProcessorEditor::HiLowCutPluginAudioProcessorEditor(HiLowCutPluginAudioProcessor& p)
     : AudioProcessorEditor(&p), audioProcessor(p), knob1Attachment(audioProcessor.apvts, "Knob 1", knob1), 
-    knob2Attachment(audioProcessor.apvts, "Knob 2", knob2), knob3Attachment(audioProcessor.apvts, "Knob 3", knob3)
+    knob2Attachment(audioProcessor.apvts, "Knob 2", knob2), knob3Attachment(audioProcessor.apvts, "Knob 3", knob3), 
+    knob4Attachment(audioProcessor.apvts, "HiCut Freq", knob4), knob5Attachment(audioProcessor.apvts, "Dist Drive", knob5)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -27,7 +28,7 @@ HiLowCutPluginAudioProcessorEditor::HiLowCutPluginAudioProcessorEditor(HiLowCutP
 
 
 
-    setSize (500, 300);
+    setSize (400, 250);
 }
 
 HiLowCutPluginAudioProcessorEditor::~HiLowCutPluginAudioProcessorEditor()
@@ -44,7 +45,7 @@ void HiLowCutPluginAudioProcessorEditor::paint (juce::Graphics& g)
 
 
     // this for loop[ is simply to visualize each bound that surrounds each knob 
-   /* for (juce::Rectangle bound : getKnobRectangleBounds()) 
+  /*  for (juce::Rectangle bound : getKnobRectangleBounds()) 
     {
         g.drawRect(bound);
     }*/
@@ -97,7 +98,7 @@ std::vector<juce::Rectangle<int>> HiLowCutPluginAudioProcessorEditor::getKnobRec
     //knob 1
     auto boundsHalfLeft = bounds1.removeFromLeft(bounds1.getWidth() * 0.5); 
     juce::Point<int> centerLeftPoint = boundsHalfLeft.getCentre(); 
-    juce::Rectangle<int> rectangleKnob1(90, 90); 
+    juce::Rectangle<int> rectangleKnob1(100, 100); 
     rectangleKnob1.setCentre(centerLeftPoint); 
     rectangleKnob1.setY(130); 
 
@@ -114,17 +115,17 @@ std::vector<juce::Rectangle<int>> HiLowCutPluginAudioProcessorEditor::getKnobRec
     rectangleKnob3.setCentre(centerRightPoint); 
     rectangleKnob3.setY(130); 
 
-    //knob 4 
+    //knob 4 (lowpass)
     auto boundsHalfLeft2 = bounds4.removeFromLeft(bounds4.getWidth() * 0.33);
     juce::Point<int> centerLeftPoint2 = boundsHalfLeft2.getCentre(); 
     juce::Rectangle<int> rectangleKnob4(60, 60);
     rectangleKnob4.setCentre(centerLeftPoint2); 
     rectangleKnob4.setY(60);
 
-    // knob 5
+    // knob 5 (drive)
     auto boundsHalfRight2 = bounds5.removeFromRight(bounds5.getWidth() * 0.33);
     juce::Point<int> centerRightPoint2 = boundsHalfRight2.getCentre();
-    juce::Rectangle<int> rectangleKnob5(60, 60);
+    juce::Rectangle<int> rectangleKnob5(75, 75);
     rectangleKnob5.setCentre(centerRightPoint2);
     rectangleKnob5.setY(60);
 

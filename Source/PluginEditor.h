@@ -32,8 +32,8 @@ private:
     HiLowCutPluginAudioProcessor& audioProcessor;
 
     // all knobs (their images are loaded in here)
-    juce::Image knob1Image = juce::ImageFileFormat::loadFrom(BinaryData::Knob_20_png, BinaryData::Knob_20_pngSize);
-    FilmStripKnob knob1 = FilmStripKnob(knob1Image, 61, false, 0);
+    juce::Image knob1Image = juce::ImageFileFormat::loadFrom(BinaryData::slushieKnob_png, BinaryData::slushieKnob_pngSize);
+    FilmStripKnob knob1 = FilmStripKnob(knob1Image, 33, false, 0);
 
     juce::Image knob2Image = juce::ImageFileFormat::loadFrom(BinaryData::Knob_20_png, BinaryData::Knob_20_pngSize);
     FilmStripKnob knob2 = FilmStripKnob(knob2Image, 61, false, 0);
@@ -41,7 +41,7 @@ private:
     juce::Image knob3Image = juce::ImageFileFormat::loadFrom(BinaryData::Knob_20_png, BinaryData::Knob_20_pngSize);
     FilmStripKnob knob3 = FilmStripKnob(knob3Image, 61, false, 0);
 
-    juce::Image knob4Image = juce::ImageFileFormat::loadFrom(BinaryData::customDriveKnob_png, BinaryData::customDriveKnob_pngSize);
+    juce::Image knob4Image = juce::ImageFileFormat::loadFrom(BinaryData::resizedTestKnob_png, BinaryData::resizedTestKnob_pngSize);
     FilmStripKnob knob4 = FilmStripKnob(knob4Image, 31, false, 0);
 
     juce::Image knob5Image = juce::ImageFileFormat::loadFrom(BinaryData::customDriveKnob_png, BinaryData::customDriveKnob_pngSize);
@@ -51,7 +51,7 @@ private:
     using APVTS = juce::AudioProcessorValueTreeState;
     using Attachment = APVTS::SliderAttachment;
 
-    Attachment knob1Attachment, knob2Attachment, knob3Attachment;  
+    Attachment knob1Attachment, knob2Attachment, knob3Attachment, knob4Attachment, knob5Attachment;  
 
     // background image
     juce::Image background;  

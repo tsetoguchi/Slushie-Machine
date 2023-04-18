@@ -19,10 +19,14 @@
     <FILE id="AsUaLX" name="FilmStripKnob.h" compile="0" resource="0" file="Source/FilmStripKnob.h"/>
     <FILE id="nQR7rP" name="ImageKnobz.png" compile="0" resource="1" file="../../Users/owner/Documents/ImageKnobz.png"/>
     <FILE id="DeeCdd" name="Knob_20.png" compile="0" resource="1" file="../../Users/owner/Desktop/knobs/Knob_20.png"/>
+    <FILE id="rzcqHM" name="myKnob.png" compile="0" resource="1" file="../../Users/owner/Desktop/knobs/myKnob.png"/>
+    <FILE id="CjiewU" name="resizedTestKnob.png" compile="0" resource="1"
+          file="../../Users/owner/Desktop/knobs/resizedTestKnob.png"/>
     <FILE id="jQHMBs" name="Shape_sample.png" compile="0" resource="1"
           file="../../Users/owner/Desktop/knobs/Shape_sample.png"/>
     <FILE id="llq4s2" name="slushie background.png" compile="0" resource="1"
           file="../../Users/owner/Desktop/knobs/slushie background.png"/>
+    <FILE id="Klf9o9" name="slushieKnob.png" compile="0" resource="1" file="../../Users/owner/Desktop/knobs/slushieKnob.png"/>
     <FILE id="JHXHJc" name="StereoImager.h" compile="0" resource="0" file="Source/StereoImager.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
