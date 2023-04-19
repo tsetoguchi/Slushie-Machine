@@ -32,14 +32,14 @@ private:
     // access the processor object that created it.
     HiLowCutPluginAudioProcessor& audioProcessor;
 
-    // all knobs (their images are loaded in here)
-    juce::Image knob1Image = juce::ImageFileFormat::loadFrom(BinaryData::knob160_png, BinaryData::knob160_pngSize);
+    // all knobs (their images are loaded in here) green, blue, pink 
+    juce::Image knob1Image = juce::ImageFileFormat::loadFrom(BinaryData::knob2fixed_png, BinaryData::knob2fixed_pngSize);
     FilmStripKnob knob1 = FilmStripKnob(knob1Image, 33, false, 0);
 
-    juce::Image knob2Image = juce::ImageFileFormat::loadFrom(BinaryData::knob2fixed_png, BinaryData::knob2fixed_pngSize);
+    juce::Image knob2Image = juce::ImageFileFormat::loadFrom(BinaryData::knob3fixed_png, BinaryData::knob3fixed_pngSize);
     FilmStripKnob knob2 = FilmStripKnob(knob2Image, 33, false, 0);
 
-    juce::Image knob3Image = juce::ImageFileFormat::loadFrom(BinaryData::knob3fixed_png, BinaryData::knob3fixed_pngSize);
+    juce::Image knob3Image = juce::ImageFileFormat::loadFrom(BinaryData::knob160_png, BinaryData::knob160_pngSize);
     FilmStripKnob knob3 = FilmStripKnob(knob3Image, 33, false, 0);
 
     juce::Image knob4Image = juce::ImageFileFormat::loadFrom(BinaryData::driveKnobdoodle_png, BinaryData::driveKnobdoodle_pngSize);

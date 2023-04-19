@@ -28,7 +28,7 @@ HiLowCutPluginAudioProcessorEditor::HiLowCutPluginAudioProcessorEditor(HiLowCutP
 
 
 
-    setSize (580, 282); //size of box
+    setSize (539, 238); //size of box
 }
 
 HiLowCutPluginAudioProcessorEditor::~HiLowCutPluginAudioProcessorEditor()
@@ -40,7 +40,7 @@ void HiLowCutPluginAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
  
-    background = juce::ImageCache::getFromMemory(BinaryData::slushie_background_png, BinaryData::slushie_background_pngSize);
+    background = juce::ImageCache::getFromMemory(BinaryData::UIv1_png, BinaryData::UIv1_pngSize);
     g.drawImageWithin(background, 0, 0, getWidth(), getHeight(), juce::RectanglePlacement::stretchToFit);
 
 
@@ -96,38 +96,41 @@ std::vector<juce::Rectangle<int>> HiLowCutPluginAudioProcessorEditor::getKnobRec
     auto bounds5 = getLocalBounds();
 
     //knob 1
-    auto boundsHalfLeft = bounds1.removeFromLeft(bounds1.getWidth() * 0.5); 
-    juce::Point<int> centerLeftPoint = boundsHalfLeft.getCentre(); 
-    juce::Rectangle<int> rectangleKnob1(80, 80);
-    rectangleKnob1.setCentre(centerLeftPoint); 
-    rectangleKnob1.setY(70); 
+    juce::Point<int> knob1center;
+    knob1center.setX(172);
+    knob1center.setY(113);
+    juce::Rectangle<int> rectangleKnob1(91, 91);
+    rectangleKnob1.setCentre(knob1center);
+    
 
     //knob 2 
-    juce::Point<int> middlePoint = bounds2.getCentre(); 
-    juce::Rectangle<int> rectangleKnob2(80, 80); 
-    rectangleKnob2.setCentre(middlePoint); 
-    rectangleKnob2.setY(70); 
+    juce::Point<int> middlePoint; 
+    middlePoint.setX(270);
+    middlePoint.setY(113);
+    juce::Rectangle<int> rectangleKnob2(91, 91);
+    rectangleKnob2.setCentre(middlePoint);  
+   
 
     //knob 3
-    auto boundsHalfRight = bounds3.removeFromRight(bounds3.getWidth() * 0.5); 
-    juce::Point<int> centerRightPoint = boundsHalfRight.getCentre(); 
-    juce::Rectangle<int> rectangleKnob3(80, 80);
-    rectangleKnob3.setCentre(centerRightPoint); 
-    rectangleKnob3.setY(70); 
+    juce::Point<int> knob3center; 
+    knob3center.setX(366);
+    knob3center.setY(113);
+    juce::Rectangle<int> rectangleKnob3(91, 91);
+    rectangleKnob3.setCentre(knob3center);
 
     //knob 4 (lowpass)
-    auto boundsHalfLeft2 = bounds4.removeFromLeft(bounds4.getWidth() * 0.33);
-    juce::Point<int> centerLeftPoint2 = boundsHalfLeft2.getCentre(); 
+    juce::Point<int> knobLowpassCenter; 
+    knobLowpassCenter.setX(62);
+    knobLowpassCenter.setY(145);
     juce::Rectangle<int> rectangleKnob4(60, 60);
-    rectangleKnob4.setCentre(centerLeftPoint2); 
-    rectangleKnob4.setY(60);
+    rectangleKnob4.setCentre(knobLowpassCenter);
 
     // knob 5 (drive)
-    auto boundsHalfRight2 = bounds5.removeFromRight(bounds5.getWidth() * 0.33);
-    juce::Point<int> centerRightPoint2 = boundsHalfRight2.getCentre();
+    juce::Point<int> knobDriveCenter;
+    knobDriveCenter.setX(62);
+    knobDriveCenter.setY(75);
     juce::Rectangle<int> rectangleKnob5(75, 75);
-    rectangleKnob5.setCentre(centerRightPoint2);
-    rectangleKnob5.setY(60);
+    rectangleKnob5.setCentre(knobDriveCenter); 
 
 
 
