@@ -40,15 +40,15 @@ void HiLowCutPluginAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
  
-    background = juce::ImageCache::getFromMemory(BinaryData::UIv1_png, BinaryData::UIv1_pngSize);
+    background = juce::ImageCache::getFromMemory(BinaryData::UIv2_png, BinaryData::UIv2_pngSize);
     g.drawImageWithin(background, 0, 0, getWidth(), getHeight(), juce::RectanglePlacement::stretchToFit);
 
 
     // this for loop[ is simply to visualize each bound that surrounds each knob 
-   for (juce::Rectangle bound : getKnobRectangleBounds()) 
+   /*for (juce::Rectangle bound : getKnobRectangleBounds()) 
     {
         g.drawRect(bound);
-    }
+    }*/
 
 }
 
@@ -128,8 +128,8 @@ std::vector<juce::Rectangle<int>> HiLowCutPluginAudioProcessorEditor::getKnobRec
     // knob 5 (drive)
     juce::Point<int> knobDriveCenter;
     knobDriveCenter.setX(62);
-    knobDriveCenter.setY(75);
-    juce::Rectangle<int> rectangleKnob5(75, 75);
+    knobDriveCenter.setY(70);
+    juce::Rectangle<int> rectangleKnob5(80, 80);
     rectangleKnob5.setCentre(knobDriveCenter); 
 
 

@@ -5,6 +5,7 @@
               displaySplashScreen="1" companyName="NelwinTao">
   <MAINGROUP id="JjYqXG" name="The Slush Machine">
     <GROUP id="{721C3124-A517-53BF-597D-CE71733254E9}" name="Images">
+      <FILE id="SOPJL2" name="UIv2.png" compile="0" resource="1" file="../../Users/owner/Desktop/knobs/UIv2.png"/>
       <FILE id="QitqYR" name="UIv1.png" compile="0" resource="1" file="../../Users/owner/Desktop/knobs/UIv1.png"/>
       <FILE id="siwsLm" name="driveKnobdoodle.png" compile="0" resource="1"
             file="../../Users/owner/Desktop/knobs/driveKnobdoodle.png"/>
