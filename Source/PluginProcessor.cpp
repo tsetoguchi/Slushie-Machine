@@ -101,7 +101,6 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
     // initialisation that you need..
 
     juce::dsp::ProcessSpec spec;
-
     spec.maximumBlockSize = samplesPerBlock;
     spec.numChannels = 1;
     spec.sampleRate = sampleRate; 
@@ -122,29 +121,25 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
 
 
     // DELAY SETTERS
-    delayLine.reset();
-    delayLine.prepare(spec2);
-    delayLine.setDelay(24000);
+    float initialDelay = 24000;
+    delayLine.prepare(spec2, initialDelay);
 
 
     // CHORUS SETTERS
-    chorus.reset();
-    chorus.prepare(spec2);
-    chorus.setCentreDelay(15);
-    //chorus.setDepth(0.5);
-    chorus.setRate(0.5);
-    chorus.setMix(1.0f);
-    //chorus.setFeedback(0.5);
+    float chorusCentreDelay = 15;
+    float chorusRate = 0.5;
+    float chorusMix = 1;
+    chorus.prepare(spec2, chorusCentreDelay, chorusRate, chorusMix);
+
+
     mySampleRate = sampleRate;
 
 
     // SAFETY LIMITER
-    safetyCompressor.reset();
-    safetyCompressor.prepare(spec2);
-    safetyCompressor.setRelease(40.0f);
-    safetyCompressor.setAttack(10.0f);
-    safetyCompressor.setRatio(100.0f);
-    safetyCompressor.setThreshold(-10.0f);
+    limiter.reset();
+    limiter.setThreshold(0);
+    limiter.setRelease(50);
+    limiter.prepare(spec2);
 
     waveshaper.functionToUse = [](float x)
     {
@@ -243,7 +238,9 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
-    
+    juce::dsp::AudioBlock<float> sampleBlock(buffer);
+
+    ChainSettings settingsOfParameters = getChainSettings(apvts);
     
 
     // In case we have more outputs than inputs, this code clears any output
@@ -255,81 +252,25 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    
-    ChainSettings settingsOfParameters = getChainSettings(apvts);
     imager.process(buffer, totalNumInputChannels, (settingsOfParameters.knob3 * 4) + 1);
-    juce::dsp::AudioBlock<float> block(buffer);
 
+    juce::dsp::AudioBlock<float> block(buffer);
     auto leftBlock = block.getSingleChannelBlock(0);
     auto rightBlock = block.getSingleChannelBlock(1);
 
     updateKnobs();
-    
 
-    // chorus processing
-    juce::dsp::AudioBlock<float> sampleBlock(buffer);
-    //chorus.setMix(settingsOfParameters.chorusMix);
-    chorus.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
-    
+    chorus.process(sampleBlock);
 
+    // Filters
     juce::dsp::ProcessContextReplacing<float> leftContext(leftBlock);
     juce::dsp::ProcessContextReplacing<float> rightContext(rightBlock);
-
     leftChain.process(leftContext);
     rightChain.process(rightContext);
 
-   
-
-   /* delayLine.process(leftContext);
-    delayLine.process(rightContext);*/
-    //we would use the process function above if we wanted to have a delay
-    //that does not change and cant be changed by sliders so like just constant  
-
-    for (int channel = 0; channel < totalNumInputChannels; channel++) {
-
-        if (delayLine.getDelay() == 0) {
-            break;
-        }
-
-        auto* inSamples = buffer.getReadPointer(channel); 
-        auto* outSamples = buffer.getWritePointer(channel);
-
-
-
-        for (int i = 0; i < buffer.getNumSamples(); i++) {
-
-
-
-            float delayedSample = delayLine.popSample(channel);
-            float newSampleToPush = inSamples[i] + (delayedSample * (settingsOfParameters.knob1 * 0.8) );
-            // instead of setting settingsOfParameters.feedBack TRY settingsOfParameters.knob1 * 0.1 aka maxDelayFeedback
-            delayLine.pushSample(channel, newSampleToPush);
-            outSamples[i] = inSamples[i] + delayedSample; 
-        }
-    }
-
-    // Distortion Processing
-    //for (int channel = 0; channel < totalNumInputChannels; channel++) {
-
-    //    auto* inSamples = buffer.getReadPointer(channel);
-    //    auto* outSamples = buffer.getWritePointer(channel);
-
-
-    //    for (int i = 0; i < buffer.getNumSamples(); i++) {
-    //        int y = 0;
-    //        if (inSamples[i] > 0) {
-    //            y = 1 - exp(-inSamples[i]);
-    //        }
-    //        else {
-    //            y = -1 + exp(inSamples[i]);
-    //        }
-    //        float distortedSample = inSamples[i] / abs(inSamples[i]) * y;
-    //        float newSampleToPush = inSamples[i] + (distortedSample * settingsOfParameters.feedBack);
-    //        delayLine.pushSample(channel, newSampleToPush);
-    //        outSamples[i] = inSamples[i] + distortedSample;
-    //    }
-    //}
+    delayLine.process(totalNumInputChannels, buffer, settingsOfParameters.knob1);
     
+    // Drive
     buffer.applyGain(settingsOfParameters.distDrive);
     
 
@@ -358,7 +299,6 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
             return out;
 
         };
-
         waveshaper.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
     }
     else {
@@ -366,11 +306,12 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     }
 
     
-    //updateFilters();
+    // Filters
     updateHighCutFilters(settingsOfParameters);
-    
-    safetyCompressor.setThreshold(settingsOfParameters.compressorThreshold);
-    safetyCompressor.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
+
+    limiter.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
+
+    // Anti-aliasing Filter
     updateAntiAliasingFilter(settingsOfParameters);
 }
 

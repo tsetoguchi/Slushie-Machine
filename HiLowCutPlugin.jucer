@@ -32,6 +32,8 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="c0VuRv" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
+    <FILE id="Cx0qKk" name="Chorus.h" compile="0" resource="0" file="Source/Chorus.h"/>
+    <FILE id="LEHv5m" name="DelayLine.h" compile="0" resource="0" file="Source/DelayLine.h"/>
     <FILE id="FPwQtq" name="FilmStripButton.h" compile="0" resource="0"
           file="Source/FilmStripButton.h"/>
     <FILE id="AsUaLX" name="FilmStripKnob.h" compile="0" resource="0" file="Source/FilmStripKnob.h"/>

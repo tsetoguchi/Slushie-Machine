@@ -11,6 +11,8 @@
 #include <JuceHeader.h>
 
 #include "StereoImager.h"
+#include "Chorus.h"
+#include "DelayLine.h"
 
 enum Slope {
     Slope_12, 
@@ -100,21 +102,18 @@ public:
 private:
 
     // SAFETY LIMITER
-    juce::dsp::Compressor<float> safetyCompressor;
+    juce::dsp::Limiter<float> limiter;
 
     // this is the dsp delayLine
-    juce::dsp::DelayLine<float, juce::dsp::DelayLineInterpolationTypes::Linear> delayLine{ 192000 };
+
+    DelayLine<float> delayLine; 
     double mySampleRate{ 0.0 };
-    float maxDelayDelayTime{ 0.0 };
 
     // waveshaper
     juce::dsp::WaveShaper<float> waveshaper;
 
-    // Stereo Imager
     StereoImager imager;
-
-    // chorus
-    juce::dsp::Chorus<float> chorus;
+    Chorus chorus;
 
     //these namespaces are used to create the filter chains (since there are 4 slopes we need 4 filters)
     using Filter = juce::dsp::IIR::Filter<float>;
