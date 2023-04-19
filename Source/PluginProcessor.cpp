@@ -433,6 +433,8 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts) {
 
     settings.width = apvts.getRawParameterValue("width")->load();
 
+    settings.toggleAB = apvts.getRawParameterValue("ToggleAB")->load(); 
+
     return settings; 
 }
 
@@ -501,6 +503,9 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
 
     // width
     layout.add(std::make_unique<juce::AudioParameterFloat>("width", "width", 1.0f, 5.0f, 1.0f));
+
+    // Toggle A and B switch 
+    layout.add(std::make_unique<juce::AudioParameterBool>("ToggleAB", "ToggleAB", true));
 
     return layout;
 }
