@@ -98,22 +98,22 @@ std::vector<juce::Rectangle<int>> HiLowCutPluginAudioProcessorEditor::getKnobRec
     //knob 1
     auto boundsHalfLeft = bounds1.removeFromLeft(bounds1.getWidth() * 0.5); 
     juce::Point<int> centerLeftPoint = boundsHalfLeft.getCentre(); 
-    juce::Rectangle<int> rectangleKnob1(90, 90); 
+    juce::Rectangle<int> rectangleKnob1(80, 80);
     rectangleKnob1.setCentre(centerLeftPoint); 
-    rectangleKnob1.setY(130); 
+    rectangleKnob1.setY(70); 
 
     //knob 2 
     juce::Point<int> middlePoint = bounds2.getCentre(); 
     juce::Rectangle<int> rectangleKnob2(80, 80); 
     rectangleKnob2.setCentre(middlePoint); 
-    rectangleKnob2.setY(60); 
+    rectangleKnob2.setY(70); 
 
     //knob 3
     auto boundsHalfRight = bounds3.removeFromRight(bounds3.getWidth() * 0.5); 
     juce::Point<int> centerRightPoint = boundsHalfRight.getCentre(); 
-    juce::Rectangle<int> rectangleKnob3(90, 90); 
+    juce::Rectangle<int> rectangleKnob3(80, 80);
     rectangleKnob3.setCentre(centerRightPoint); 
-    rectangleKnob3.setY(130); 
+    rectangleKnob3.setY(70); 
 
     //knob 4 (lowpass)
     auto boundsHalfLeft2 = bounds4.removeFromLeft(bounds4.getWidth() * 0.33);
