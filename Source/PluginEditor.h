@@ -33,7 +33,7 @@ private:
     HiLowCutPluginAudioProcessor& audioProcessor;
 
     // all knobs (their images are loaded in here)
-    juce::Image knob1Image = juce::ImageFileFormat::loadFrom(BinaryData::knob1slushie_png, BinaryData::knob1slushie_pngSize);
+    juce::Image knob1Image = juce::ImageFileFormat::loadFrom(BinaryData::knob1slushie70x4_png, BinaryData::knob1slushie70x4_pngSize);
     FilmStripKnob knob1 = FilmStripKnob(knob1Image, 33, false, 0);
 
     juce::Image knob2Image = juce::ImageFileFormat::loadFrom(BinaryData::Knob_20_png, BinaryData::Knob_20_pngSize);
