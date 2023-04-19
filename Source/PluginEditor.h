@@ -30,7 +30,7 @@ public:
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    HiLowCutPluginAudioProcessor& audioProcessor;
+    HiLowCutPluginAudioProcessor& audioProcessor; 
 
     // all knobs (their images are loaded in here) green, blue, pink 
     juce::Image knob1Image = juce::ImageFileFormat::loadFrom(BinaryData::knob2fixed_png, BinaryData::knob2fixed_pngSize);
@@ -49,12 +49,16 @@ private:
     FilmStripKnob knob5 = FilmStripKnob(knob5Image, 33, false, 0);
 
     // the image for the flip switch goes here and the button as instance as well
+    juce::Image toggleSwitchImage = juce::ImageFileFormat::loadFrom(BinaryData::switchKnob_png, BinaryData::switchKnob_pngSize);
+    FilmStripButton toggleSwitch = FilmStripButton(toggleSwitchImage, false, 0);
 
     //APVTS and attachments 
     using APVTS = juce::AudioProcessorValueTreeState;
     using Attachment = APVTS::SliderAttachment;
-
-    Attachment knob1Attachment, knob2Attachment, knob3Attachment, knob4Attachment, knob5Attachment;  
+    using ButtonAttachment = APVTS::ButtonAttachment;
+    
+    Attachment knob1Attachment, knob2Attachment, knob3Attachment, knob4Attachment, knob5Attachment; 
+    ButtonAttachment toggleAttachment; 
 
     // background image
     juce::Image background;  

@@ -16,13 +16,6 @@ public:
 		setTextBoxStyle(NoTextBox, 0, 0, 0);
 		setSliderStyle(RotaryVerticalDrag);
 
-		/*if(isHorizontal_) {
-			frameHeight = filmStrip.getHeight();
-			frameWidth = filmStrip.getWidth() / numFrames_;
-		} else {
-			frameHeight = filmStrip.getHeight() / numFrames_;
-			frameWidth = filmStrip.getWidth();
-		}*/
 		frameHeight = filmStrip.getHeight() / numFrames_;
 		frameWidth = filmStrip.getWidth();
 		setRange(0.0f, 1.0f, 0.001f);
@@ -43,17 +36,6 @@ public:
 			g.drawImage(filmStrip, 0, 0, getWidth(), getHeight(),
 				0, value * frameHeight, frameWidth, frameHeight);
 		}
-
-		
-		/*	int value = (getValue() - getMinimum()) / (getMaximum() - getMinimum()) * (numFrames_ - 1);
-			if (isHorizontal_) {
-				g.drawImage(filmStrip, 0, 0, getWidth(), getHeight(),
-					value * frameWidth, 0, frameWidth, frameHeight);
-			}
-			else {
-				g.drawImage(filmStrip, 0, 0, getWidth(), getHeight(),
-					0, value * frameHeight, frameWidth, frameHeight);
-			}*/
 		
 	}
 
