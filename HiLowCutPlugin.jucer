@@ -26,6 +26,8 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="c0VuRv" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
+    <FILE id="FPwQtq" name="FilmStripButton.h" compile="0" resource="0"
+          file="Source/FilmStripButton.h"/>
     <FILE id="AsUaLX" name="FilmStripKnob.h" compile="0" resource="0" file="Source/FilmStripKnob.h"/>
     <FILE id="JHXHJc" name="StereoImager.h" compile="0" resource="0" file="Source/StereoImager.h"/>
   </MAINGROUP>
