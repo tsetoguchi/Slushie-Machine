@@ -571,8 +571,6 @@ void HiLowCutPluginAudioProcessor::updateKnob1() {
 
     chorus.setDepth(coefficient * maxChorusDepth);
     chorus.setFeedback(coefficient * maxChorusFeedback);
-
- 
 }
 
 void HiLowCutPluginAudioProcessor::updateKnob2() {
