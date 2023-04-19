@@ -178,10 +178,10 @@ private:
 
     void updateFilters();
 
-    void updateKnobs();
-    void updateKnob1();
-    void updateKnob2();
-    void updateKnob3();
+    void updateKnobsAorB(bool mode);
+    void updateKnob1(bool mode);
+    void updateKnob2(bool mode);
+    void updateKnob3(bool mode);
 
     float janosDist(float x);
     float sgnDist(float x);

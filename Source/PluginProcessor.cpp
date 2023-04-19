@@ -164,7 +164,7 @@ void HiLowCutPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
 
     };
 
-    updateKnobs();
+    updateKnobsAorB(true);
     
 }
 
@@ -252,31 +252,74 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    imager.process(buffer, totalNumInputChannels, (settingsOfParameters.knob3 * 4) + 1);
+    // Drive
+    buffer.applyGain(settingsOfParameters.distDrive);
 
     juce::dsp::AudioBlock<float> block(buffer);
     auto leftBlock = block.getSingleChannelBlock(0);
     auto rightBlock = block.getSingleChannelBlock(1);
 
-    updateKnobs();
+    updateKnobsAorB(settingsOfParameters.toggleAB); 
 
-    chorus.process(sampleBlock);
+    if (settingsOfParameters.toggleAB) {
 
-    // Filters
-    juce::dsp::ProcessContextReplacing<float> leftContext(leftBlock);
-    juce::dsp::ProcessContextReplacing<float> rightContext(rightBlock);
-    leftChain.process(leftContext);
-    rightChain.process(rightContext);
+        // Chorus
+        chorus.process(sampleBlock);
 
-    delayLine.process(totalNumInputChannels, buffer, settingsOfParameters.knob1);
-    
-    // Drive
-    buffer.applyGain(settingsOfParameters.distDrive);
-    
+        // Imager
+        imager.process(buffer, totalNumInputChannels, settingsOfParameters.knob3 + 1);
 
+        // Delay
+        delayLine.process(totalNumInputChannels, buffer, settingsOfParameters.knob1);
 
-    // if the waveshaper is not bypassed
-    if (!settingsOfParameters.distBypass) {
+        // Waveshaper
+        waveshaper.functionToUse = [](float x)
+            {
+                float out = x;
+
+                if (x <= -1.7f)
+                    out = -1.0f;
+                else if ((x > -1.7f) && (x < -0.3f))
+                {
+                    x += 0.3f;
+                    out = x + (x * x) / (4 * (1 - 0.3f)) - 0.3f;
+                }
+                else if ((x > 0.9f) && (x < 1.1f))
+                {
+                    x -= 0.9f;
+                    out = x - (x * x) / (4 * (1 - 0.9f)) + 0.9f;
+                }
+                else if (x > 1.1f)
+                    out = 1.0f;
+
+                return out;
+
+            };
+        waveshaper.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
+        
+        // Filter
+        juce::dsp::ProcessContextReplacing<float> leftContext(leftBlock);
+        juce::dsp::ProcessContextReplacing<float> rightContext(rightBlock);
+        leftChain.process(leftContext);
+        rightChain.process(rightContext);
+        updateHighCutFilters(settingsOfParameters);
+    }
+    else {
+
+        // Filter
+        juce::dsp::ProcessContextReplacing<float> leftContext(leftBlock);
+        juce::dsp::ProcessContextReplacing<float> rightContext(rightBlock);
+        leftChain.process(leftContext);
+        rightChain.process(rightContext);
+        updateHighCutFilters(settingsOfParameters);
+
+        // Delay
+        delayLine.process(totalNumInputChannels, buffer, settingsOfParameters.knob1);
+
+        // Chorus
+        chorus.process(sampleBlock);
+
+        // Waveshaper
         waveshaper.functionToUse = [](float x)
         {
             float out = x;
@@ -300,14 +343,13 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
 
         };
         waveshaper.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
-    }
-    else {
-        waveshaper.reset();
+
+        // Imager
+        imager.process(buffer, totalNumInputChannels, settingsOfParameters.knob3 + 1);
+
     }
 
     
-    // Filters
-    updateHighCutFilters(settingsOfParameters);
 
     limiter.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));
 
@@ -423,7 +465,7 @@ HiLowCutPluginAudioProcessor::createParameterLayout() {
     layout.add(std::make_unique<juce::AudioParameterBool>("Dist Bypass", "Dist Bypass", true));
 
     // Parameter for Distortion Drive
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Dist Drive", "Dist Drive", 1.0f, 12.0f, 0.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Dist Drive", "Dist Drive", 1.0f, 12.0f, 0.0f));  
 
     // Parameter for SAFETY Compressor
     layout.add(std::make_unique<juce::AudioParameterFloat>("Compressor Threshold", "Compressor Threshold", -100.0f, 0.0f, -6.0f));
@@ -494,14 +536,13 @@ void HiLowCutPluginAudioProcessor::updateFilters() {
     updateAntiAliasingFilter(chainSettings);
 }
 
-void HiLowCutPluginAudioProcessor::updateKnobs() {
-    
-    updateKnob1();
-    updateKnob2();
-    updateKnob3();
+void HiLowCutPluginAudioProcessor::updateKnobsAorB(bool mode) {
+    updateKnob1(mode);
+    updateKnob2(mode);
+    updateKnob3(mode);
 }
 
-void HiLowCutPluginAudioProcessor::updateKnob1() {
+void HiLowCutPluginAudioProcessor::updateKnob1(bool mode) {
     auto chainSettings = getChainSettings(apvts);
 
     auto coefficient = chainSettings.knob1;
@@ -514,11 +555,12 @@ void HiLowCutPluginAudioProcessor::updateKnob1() {
     chorus.setFeedback(coefficient * maxChorusFeedback);
 }
 
-void HiLowCutPluginAudioProcessor::updateKnob2() {
+void HiLowCutPluginAudioProcessor::updateKnob2(bool mode) {
     auto chainSettings = getChainSettings(apvts);
     auto coefficient = chainSettings.knob2;
 
-    float maxChorusDelay = 15;
+    // 15 -> 5
+    float maxChorusDelay = 5;
     float maxDelayDelayTime = 0.05;
     chorus.setCentreDelay(coefficient * maxChorusDelay);
 
@@ -532,7 +574,7 @@ void HiLowCutPluginAudioProcessor::updateKnob2() {
     }
 }
 
-void HiLowCutPluginAudioProcessor::updateKnob3() {
+void HiLowCutPluginAudioProcessor::updateKnob3(bool mode) {
     auto chainSettings = getChainSettings(apvts);
     auto coefficient = chainSettings.knob3;
    

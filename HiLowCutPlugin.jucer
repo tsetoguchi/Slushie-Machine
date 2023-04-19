@@ -21,6 +21,7 @@
       <FILE id="MT4FBz" name="slushie background.png" compile="0" resource="1"
             file="Images/slushie background.png"/>
       <FILE id="DrHBUQ" name="slushieKnob.png" compile="0" resource="1" file="Images/slushieKnob.png"/>
+      <FILE id="Jtmmli" name="switchKnob.png" compile="0" resource="1" file="Images/switchKnob.png"/>
       <FILE id="e2RjpN" name="UIv2.png" compile="0" resource="1" file="Images/UIv2.png"/>
     </GROUP>
     <GROUP id="{0A47AB2F-36AC-EF95-7269-B2F4CCB9CCDA}" name="Source">
@@ -38,7 +39,6 @@
           file="Source/FilmStripButton.h"/>
     <FILE id="AsUaLX" name="FilmStripKnob.h" compile="0" resource="0" file="Source/FilmStripKnob.h"/>
     <FILE id="JHXHJc" name="StereoImager.h" compile="0" resource="0" file="Source/StereoImager.h"/>
-    <FILE id="n7gW4V" name="switchKnob.png" compile="0" resource="1" file="../../OneDrive/Desktop/buttons and flips/switchKnob.png"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>
