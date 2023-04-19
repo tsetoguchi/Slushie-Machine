@@ -31,7 +31,7 @@ public:
 
 	void paint(juce::Graphics& g) override
 	{
-        bool isOn = getToggleState(); 
+        bool isOn = !getToggleState(); 
 
         if (isHorizontal_)
         {
