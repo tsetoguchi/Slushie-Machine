@@ -4,16 +4,24 @@
               useAppConfig="0" addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1"
               displaySplashScreen="1" companyName="NelwinTao">
   <MAINGROUP id="JjYqXG" name="The Slush Machine">
-    <GROUP id="{721C3124-A517-53BF-597D-CE71733254E9}" name="Images">
-      <FILE id="SOPJL2" name="UIv2.png" compile="0" resource="1" file="../../Users/owner/Desktop/knobs/UIv2.png"/>
-      <FILE id="QitqYR" name="UIv1.png" compile="0" resource="1" file="../../Users/owner/Desktop/knobs/UIv1.png"/>
-      <FILE id="siwsLm" name="driveKnobdoodle.png" compile="0" resource="1"
-            file="../../Users/owner/Desktop/knobs/driveKnobdoodle.png"/>
-      <FILE id="cYO114" name="knob160.png" compile="0" resource="1" file="../../Users/owner/Desktop/knobs/knob160.png"/>
-      <FILE id="GuWlLp" name="knob3fixed.png" compile="0" resource="1" file="../../Users/owner/Desktop/knobs/knob3fixed.png"/>
-      <FILE id="XrFB5G" name="knob2fixed.png" compile="0" resource="1" file="../../Users/owner/Desktop/knobs/knob2fixed.png"/>
-      <FILE id="TSpPoG" name="slushie background.png" compile="0" resource="1"
+    <GROUP id="{EBF8E8E9-5D0F-2741-243D-A94D093444DB}" name="Images">
+      <FILE id="JTg0GI" name="a_bottle.png" compile="0" resource="1" file="Images/a_bottle.png"/>
+      <FILE id="AbMg6A" name="customDriveKnob.png" compile="0" resource="1"
+            file="Images/customDriveKnob.png"/>
+      <FILE id="KTY5QX" name="driveKnobdoodle.png" compile="0" resource="1"
+            file="Images/driveKnobdoodle.png"/>
+      <FILE id="KYoL3t" name="Knob_20.png" compile="0" resource="1" file="Images/Knob_20.png"/>
+      <FILE id="GQx1rx" name="knob2fixed.png" compile="0" resource="1" file="Images/knob2fixed.png"/>
+      <FILE id="zhUOl6" name="knob3fixed.png" compile="0" resource="1" file="Images/knob3fixed.png"/>
+      <FILE id="MP2KD6" name="knob160.png" compile="0" resource="1" file="Images/knob160.png"/>
+      <FILE id="KmHN1F" name="resizedTestKnob.png" compile="0" resource="1"
+            file="Images/resizedTestKnob.png"/>
+      <FILE id="oZhCk7" name="Shape_sample.png" compile="0" resource="1"
+            file="Images/Shape_sample.png"/>
+      <FILE id="MT4FBz" name="slushie background.png" compile="0" resource="1"
             file="Images/slushie background.png"/>
+      <FILE id="DrHBUQ" name="slushieKnob.png" compile="0" resource="1" file="Images/slushieKnob.png"/>
+      <FILE id="e2RjpN" name="UIv2.png" compile="0" resource="1" file="Images/UIv2.png"/>
     </GROUP>
     <GROUP id="{0A47AB2F-36AC-EF95-7269-B2F4CCB9CCDA}" name="Source">
       <FILE id="ZUGcpy" name="PluginProcessor.cpp" compile="1" resource="0"
