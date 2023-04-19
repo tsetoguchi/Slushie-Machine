@@ -28,7 +28,7 @@ HiLowCutPluginAudioProcessorEditor::HiLowCutPluginAudioProcessorEditor(HiLowCutP
 
 
 
-    setSize (400, 250); //size of box
+    setSize (580, 282); //size of box
 }
 
 HiLowCutPluginAudioProcessorEditor::~HiLowCutPluginAudioProcessorEditor()
