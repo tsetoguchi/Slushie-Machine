@@ -38,6 +38,7 @@
           file="Source/FilmStripButton.h"/>
     <FILE id="AsUaLX" name="FilmStripKnob.h" compile="0" resource="0" file="Source/FilmStripKnob.h"/>
     <FILE id="JHXHJc" name="StereoImager.h" compile="0" resource="0" file="Source/StereoImager.h"/>
+    <FILE id="n7gW4V" name="switchKnob.png" compile="0" resource="1" file="../../OneDrive/Desktop/buttons and flips/switchKnob.png"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>

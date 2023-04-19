@@ -11,9 +11,10 @@
 
 //==============================================================================
 HiLowCutPluginAudioProcessorEditor::HiLowCutPluginAudioProcessorEditor(HiLowCutPluginAudioProcessor& p)
-    : AudioProcessorEditor(&p), audioProcessor(p), knob1Attachment(audioProcessor.apvts, "Knob 1", knob1), 
-    knob2Attachment(audioProcessor.apvts, "Knob 2", knob2), knob3Attachment(audioProcessor.apvts, "Knob 3", knob3), 
-    knob4Attachment(audioProcessor.apvts, "HiCut Freq", knob4), knob5Attachment(audioProcessor.apvts, "Dist Drive", knob5)
+    : AudioProcessorEditor(&p), audioProcessor(p), knob1Attachment(audioProcessor.apvts, "Knob 1", knob1),
+    knob2Attachment(audioProcessor.apvts, "Knob 2", knob2), knob3Attachment(audioProcessor.apvts, "Knob 3", knob3),
+    knob4Attachment(audioProcessor.apvts, "HiCut Freq", knob4), knob5Attachment(audioProcessor.apvts, "Dist Drive", knob5),
+    toggleAttachment(audioProcessor.apvts, "ToggleAB", toggleSwitch)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -45,9 +46,12 @@ void HiLowCutPluginAudioProcessorEditor::paint (juce::Graphics& g)
 
 
     // this for loop[ is simply to visualize each bound that surrounds each knob 
-   /*for (juce::Rectangle bound : getKnobRectangleBounds()) 
-    {
-        g.drawRect(bound);
+ /*  for (juce::Rectangle bound : getKnobRectangleBounds()) 
+    {   
+
+       juce::Colour white = juce::Colour(0, 0, 0);
+       g.setColour(white);
+       g.drawRect(bound); 
     }*/
 
 }
@@ -68,6 +72,9 @@ void HiLowCutPluginAudioProcessorEditor::resized()
     knob4.setBounds(allBoundsVector[3]);
     //knob 5
     knob5.setBounds(allBoundsVector[4]);
+    //toggle switch 
+    toggleSwitch.setBounds(allBoundsVector[5]);
+
 }
 
 // add all knobs here in the future (rn im just testing 1 knob)
@@ -77,9 +84,10 @@ std::vector<juce::Component*> HiLowCutPluginAudioProcessorEditor::getComps()
     {
         &knob1,
         &knob2,
-        &knob3, 
-        &knob4, 
-        &knob5
+        &knob3,
+        &knob4,
+        &knob5,
+        &toggleSwitch
     };
 }
 
@@ -132,6 +140,12 @@ std::vector<juce::Rectangle<int>> HiLowCutPluginAudioProcessorEditor::getKnobRec
     juce::Rectangle<int> rectangleKnob5(80, 80);
     rectangleKnob5.setCentre(knobDriveCenter); 
 
+    //toggle Switch 
+    juce::Point<int> toggleSwitchCenter;
+    toggleSwitchCenter.setX(475);
+    toggleSwitchCenter.setY(108);
+    juce::Rectangle<int> rectangleToggleSwitch(50, 50);
+    rectangleToggleSwitch.setCentre(toggleSwitchCenter);  
 
 
 
@@ -140,6 +154,7 @@ std::vector<juce::Rectangle<int>> HiLowCutPluginAudioProcessorEditor::getKnobRec
     toReturn.push_back(rectangleKnob3);
     toReturn.push_back(rectangleKnob4);
     toReturn.push_back(rectangleKnob5);
+    toReturn.push_back(rectangleToggleSwitch);
     
     return toReturn;
 }
