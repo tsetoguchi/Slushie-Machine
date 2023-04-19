@@ -29,8 +29,10 @@
     <FILE id="FPwQtq" name="FilmStripButton.h" compile="0" resource="0"
           file="Source/FilmStripButton.h"/>
     <FILE id="AsUaLX" name="FilmStripKnob.h" compile="0" resource="0" file="Source/FilmStripKnob.h"/>
-    <FILE id="o2dTUI" name="knob1slushie.png" compile="0" resource="1"
-          file="../../Users/owner/Desktop/knobs/knob1slushie.png"/>
+    <FILE id="eG4VlW" name="knob1slushie70x4.png" compile="0" resource="1"
+          file="../../Users/owner/Desktop/knobs/knob1slushie70x4.png"/>
+    <FILE id="Qbelx6" name="knob1slushie80.png" compile="0" resource="1"
+          file="../../Users/owner/Desktop/knobs/knob1slushie80.png"/>
     <FILE id="JHXHJc" name="StereoImager.h" compile="0" resource="0" file="Source/StereoImager.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
