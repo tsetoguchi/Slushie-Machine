@@ -273,26 +273,16 @@ void HiLowCutPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         delayLine.process(totalNumInputChannels, buffer, settingsOfParameters.knob1);
 
         // Waveshaper
-        waveshaper.functionToUse = [](float x)
+        waveshaper.functionToUse = [](float in)
             {
-                float out = x;
-
-                if (x <= -1.7f)
-                    out = -1.0f;
-                else if ((x > -1.7f) && (x < -0.3f))
-                {
-                    x += 0.3f;
-                    out = x + (x * x) / (4 * (1 - 0.3f)) - 0.3f;
-                }
-                else if ((x > 0.9f) && (x < 1.1f))
-                {
-                    x -= 0.9f;
-                    out = x - (x * x) / (4 * (1 - 0.9f)) + 0.9f;
-                }
-                else if (x > 1.1f)
-                    out = 1.0f;
-
-                return out;
+            float x = in * .25;
+            float a = abs(x);
+            float x2 = x * x;
+            float y = 1 - 1 / (1 + a
+                + x2
+                + 0.66422417311781 * x2 * a
+                + 0.36483285408241 * x2 * x2);
+            return (x >= 0) ? y : -y;
 
             };
         waveshaper.process(juce::dsp::ProcessContextReplacing<float>(sampleBlock));

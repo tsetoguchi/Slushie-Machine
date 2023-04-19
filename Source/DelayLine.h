@@ -36,11 +36,7 @@ public:
             auto* inSamples = buffer.getReadPointer(channel);
             auto* outSamples = buffer.getWritePointer(channel);
 
-
-
             for (int i = 0; i < buffer.getNumSamples(); i++) {
-
-
 
                 float delayedSample = delayLine.popSample(channel);
                 float newSampleToPush = inSamples[i] + (delayedSample * (coefficient * 0.8));
