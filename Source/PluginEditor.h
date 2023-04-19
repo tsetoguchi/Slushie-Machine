@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "FilmStripKnob.h"
+#include "FilmStripButton.h"
 
 
 //==============================================================================
@@ -46,6 +47,8 @@ private:
 
     juce::Image knob5Image = juce::ImageFileFormat::loadFrom(BinaryData::customDriveKnob_png, BinaryData::customDriveKnob_pngSize);
     FilmStripKnob knob5 = FilmStripKnob(knob5Image, 31, false, 0);
+
+    // the image for the flip switch goes here and the button as instance as well
 
     //APVTS and attachments 
     using APVTS = juce::AudioProcessorValueTreeState;

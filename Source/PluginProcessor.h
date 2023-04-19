@@ -39,6 +39,8 @@ struct ChainSettings
     
     float width{ 0.5f };
 
+    bool toggleAB{ true };
+
 };
 
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
