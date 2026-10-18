@@ -1,41 +1,66 @@
 # The Slushie Machine
 
-A multi-component audio processing plugin focused on simplicity and creativity, designed for an intuitive and streamlined user experience.
+The Slushie Machine is a VST3 effects plugin that Nelwin and I built in JUCE for our Music Technology capstone at Northeastern. It takes incoming audio and runs it through a fixed chain of effects (stereo imager, chorus, filters, delay, drive and a limiter), and the whole chain is controlled with five knobs.
 
-## Overview
+![The Slushie Machine UI](Images/UIv2.png)
 
-**The Slushie Machine** is an audio effects plugin created to bring creative sound-shaping capabilities to a broad range of users. By integrating a series of customizable effects, this plugin provides a unique "recipe" for sound modification. Our goal has always been to offer a powerful tool that is both easy to use and effective for diverse sound design needs.
+## Why we made it
 
-## Goal
+We are both producers, and we wanted to make an effects plugin that adds simplicity and creative freedom to any workflow. We believe that a simple interface will appeal to a wider audience, especially people who are newer to production. Rather than giving each effect its own set of controls, we mapped several parameters onto a single knob, so turning one knob changes more than one effect at the same time. This takes away some fine control from the user. However, it keeps the interface small, and it makes the plugin something you play with rather than something you have to program.
 
-As both producers and developers, we aimed to make an effects plugin that introduces simplicity and creative freedom into any workflow. We believe that an intuitive, easy-to-use interface will appeal to a wider audience. By combining multiple effects with carefully customized parameters and algorithms, we crafted The Slushie Machine to deliver versatile sound transformations with ease.
+## Finding the "recipe"
 
-## Background
+The plugin is designed to modify incoming audio, not to generate new sound. Before writing any DSP code, we spent hours in FL Studio and Ableton Live chaining effects together to find the sound we were going for. Since each effect stays the same, the order of the chain and the amount of each effect are what make the result. Once we had a chain we liked, we rebuilt it in JUCE and tuned the range of each parameter by testing the plugin in both DAWs.
 
-### Technology Stack
-The Slushie Machine was developed using:
-- **JUCE** – an open-source, cross-platform C++ framework for creating desktop and mobile applications. We specifically used JUCE for VST3 audio plugin development.
-- **Visual Studio** – our main environment for development, building, and testing.
-- **GitHub** – for file organization, collaboration, and version control.
-- **JKnobMan** & **Photoshop** – to create custom UI components.
-- **FL Studio** & **Ableton Live** – for extensive testing during live production.
+## Signal chain
 
-This combination of tools allowed us to develop, design, and refine the plugin effectively.
+Audio goes through the effects in this order (see `processBlock` in `Source/PluginProcessor.cpp`):
 
-## Developing the "Recipe"
+1. **Stereo imager** - mid/side widening, width from 1 to 5
+2. **Chorus** - JUCE `dsp::Chorus` with the rate fixed at 0.5 Hz
+3. **Filters** - a 20 Hz high-pass to clear out rumble, and a low-pass Butterworth filter (20 Hz - 20 kHz)
+4. **Delay** - feedback delay, up to 50 ms
+5. **Drive** - gain from 1x to 12x, followed by a waveshaper
+6. **Safety limiter** - compressor at a 100:1 ratio (10 ms attack, 40 ms release, -6 dB threshold) to keep peaks under control
 
-Creating The Slushie Machine involved extensive sound experimentation to find the perfect target sound profile. The plugin was designed to modify incoming audio rather than generate new sound. Here’s how we approached the process:
-1. **Experimentation:** We spent hours testing various effects and mixing setups in FL Studio and Ableton Live to explore different sound possibilities.
-2. **Effect Chaining:** We decided to incorporate multiple effects in series to allow unique permutations and chaining. Although each effect remains the same, different orderings yield distinct sonic results.
-3. **User Control:** To enhance flexibility, we provide adjustable parameters for each effect, allowing users to fine-tune and explore their own sound transformations.
+## Controls
 
-### Effects Used
-The plugin chains the following effects in series:
-- **Delay:** Adds depth and spatial layering.
-- **IIR Filter:** Adjusts frequencies to shape tonal qualities.
-- **Chorus:** Adds richness and movement to sounds.
-- **Limiter:** Ensures audio peaks stay within a controlled range.
-- **Imager:** Enhances stereo width and spatial perception.
-- **Waveshaper:** Adds harmonic distortion and texture.
+| Knob | What it controls |
+|---|---|
+| Drive (top left) | Gain into the waveshaper and limiter, 1x to 12x |
+| Low-pass (bottom left) | Low-pass cutoff, 20 Hz to 20 kHz |
+| Knob 1 (middle, left) | Chorus depth, chorus feedback (up to 0.1) and delay feedback (up to 0.8) |
+| Knob 2 (middle, center) | Chorus centre delay (up to 15 ms) and delay time (up to 50 ms) |
+| Knob 3 (middle, right) | Chorus mix and stereo width |
 
-Each effect has adjustable parameters, empowering users to explore limitless creative combinations.
+Turning Knob 2 all the way down turns the delay off completely.
+
+## Building
+
+The project was built on Windows with Visual Studio 2022. The generated Visual Studio project is not checked in, so you will need Projucer to create it.
+
+1. Install [JUCE](https://juce.com/) and set the global JUCE modules path in Projucer.
+2. Open `The Slushie Machine.jucer` in Projucer and save it. This generates the Visual Studio 2022 project in `Builds/VisualStudio2022`.
+3. Open the solution in Visual Studio and build the VST3 target in Release.
+4. Copy the built `.vst3` into `C:\Program Files\Common Files\VST3` and rescan plugins in your DAW.
+
+The Projucer project is still named "The Slush Machine", so the plugin shows up under that name in your DAW.
+
+## Tools we used
+
+- **JUCE** - C++ framework for the plugin itself
+- **Visual Studio** - development, building and debugging
+- **JKnobMan** and **Photoshop** - knob filmstrips and the background (the source files are in `Images/` and `UI Design/`)
+- **FL Studio** and **Ableton Live** - testing the plugin during actual production
+- **GitHub** - version control between the two of us
+
+## Known issues
+
+The plugin works, but there are a few things that are not finished:
+
+- The waveshaper's bypass parameter defaults to on and there is no button for it in the UI. In the current build, the Drive knob only adds gain into the limiter unless the bypass is turned off through host automation.
+- There is no oversampling, so it should be assumed that the plugin introduces aliasing when the signal is heavily driven.
+- The stereo imager assumes two channels, so the plugin should only be used on stereo tracks.
+- The UI is a fixed 539 x 238 and does not resize.
+
+If given more time, we would add a bypass button for the waveshaper, oversampling for the drive stage, presets, and a resizable UI.
